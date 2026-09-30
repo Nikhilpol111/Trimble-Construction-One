@@ -1,0 +1,19 @@
+.wc-root {
+  --wc-sidebar-width: 248px;
+  --wc-topbar-height: 52px;
+  --wc-bg: #eef1f4;
+  --wc-surface: #ffffff;
+  --wc-border: #dde3ea;
+  --wc-border-light: #e8edf2;
+  --wc-text: #1a1a1a;
+  --wc-muted: #6b7280;
+  --wc-muted-light: #9ca3af;
+  --wc-brand: #003b5c;
+  --wc-brand-mid: #005f8a;
+  --wc-brand-light: #0076a8;
+  --wc-active-bg: #e4f0f7;
+  --wc-active-border: #0076a8;
+  --wc-success: #2d8a5c;
+  --wc-widget-gap: 14px;
+  --wc-composer-max: 920px;
+}

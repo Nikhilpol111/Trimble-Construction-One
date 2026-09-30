@@ -1,0 +1,8 @@
+export { SetupProfilePage } from './SetupProfilePage'
+export { SetupProductsPage } from './SetupProductsPage'
+export { SetupWeekMorningPage } from './SetupWeekMorningPage'
+export { SetupWeekTimePage } from './SetupWeekTimePage'
+export { SetupWeekTimesinkPage } from './SetupWeekTimesinkPage'
+export { SetupWeekCheckinPage } from './SetupWeekCheckinPage'
+export { SetupTrustPage } from './SetupTrustPage'
+export { SetupReadyPage } from './SetupReadyPage'

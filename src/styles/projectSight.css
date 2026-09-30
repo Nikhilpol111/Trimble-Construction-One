@@ -1,0 +1,60 @@
+.ps-root {
+  --ps-rail-width: 52px;
+  --ps-sidebar-width: 220px;
+  --ps-topbar-height: 52px;
+  --ps-assist-width: 340px;
+  --ps-bg: #f3f5f7;
+  --ps-surface: #ffffff;
+  --ps-border: #e2e8f0;
+  --ps-border-light: #eef2f6;
+  --ps-text: #1a1a1a;
+  --ps-muted: #64748b;
+  --ps-brand: #0076a8;
+  --ps-brand-dark: #003b5c;
+  --ps-active-bg: #e8f4fa;
+  --ps-success: #2d8a5c;
+  --ps-warning-bg: #fff7ed;
+  --ps-warning-border: #fed7aa;
+  --ps-warning-text: #9a3412;
+  --ps-assist-gradient: linear-gradient(135deg, #a855f7 0%, #06b6d4 50%, #f472b6 100%);
+  --ps-filled-badge: #f3e8ff;
+  --ps-filled-text: #7c3aed;
+  --ps-highlight-field: #fbbf24;
+}
+
+.ps-workspace-frame {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--ps-surface);
+  border-radius: 4px;
+}
+
+.ps-workspace-frame--glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 6px;
+  padding: 1px;
+  background: var(--ps-assist-gradient);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ps-workspace-inner {
+  position: relative;
+  z-index: 0;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--ps-surface);
+  border-radius: 4px;
+}

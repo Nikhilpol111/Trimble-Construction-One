@@ -1,0 +1,34 @@
+/* Trimble onboarding — visual tokens aligned to reference PNGs */
+
+.setup-root {
+  --setup-bg: #eef1f4;
+  --setup-sidebar-width: 252px;
+  --setup-brand: #003b5c;
+  --setup-brand-mid: #005f8a;
+  --setup-brand-light: #0076a8;
+  --setup-link: #0076b6;
+  --setup-active-bg: #e4f0f7;
+  --setup-success: #2d8a5c;
+  --setup-success-bg: #e8f5ec;
+  --setup-success-btn: #c5e6d0;
+  --setup-success-btn-text: #1f6b42;
+  --setup-text: #1a1a1a;
+  --setup-muted: #6b7280;
+  --setup-muted-light: #9ca3af;
+  --setup-border: #d8dee6;
+  --setup-card: #ffffff;
+  --setup-profile-hero: #005a82;
+  --setup-profile-hero-dark: #004766;
+  --setup-content-max: 720px;
+  --setup-content-wide: 780px;
+  --setup-radius: 8px;
+  --setup-radius-lg: 10px;
+}
+
+.signin-root {
+  --signin-brand: #003b5c;
+  --signin-link: #0076b6;
+  --signin-panel-bg: #f7f9fc;
+  --signin-input-border: #c5cdd8;
+  --signin-btn: #003b5c;
+}
