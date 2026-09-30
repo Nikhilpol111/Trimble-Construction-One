@@ -8,6 +8,7 @@ import {
   SignInSocialButton,
 } from '../components/onboarding/SignInLayout'
 import { useOnboarding } from '../context/OnboardingContext'
+import { Checkbox } from '../components/common/Checkbox'
 
 export function SignInPage() {
   const navigate = useNavigate()
@@ -73,15 +74,14 @@ export function SignInPage() {
             Continue with Microsoft
           </SignInSocialButton>
         </div>
-        <label className="mt-6 flex cursor-pointer items-center gap-2 text-sm text-[#333]">
-          <input
-            type="checkbox"
+        <div className="mt-6">
+          <Checkbox
             checked={state.rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-            className="h-4 w-4 rounded border-[#999] accent-[#0076b6]"
+            label="Remember me"
+            onCheckedChange={setRememberMe}
+            className="text-sm text-[#333]"
           />
-          Remember me
-        </label>
+        </div>
         <div className="mt-auto pt-10 text-center text-[11px] leading-relaxed text-[var(--signin-link,#0076b6)]">
           <p>
             <button type="button" className="hover:underline">

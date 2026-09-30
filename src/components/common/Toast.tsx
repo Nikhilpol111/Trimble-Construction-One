@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from 'react'
 import type { ToastMessage } from '../../types'
-import { StatusBadge } from './StatusBadge'
+import { Alert } from './Alert'
 
 type ToastContextValue = {
   push: (toast: Omit<ToastMessage, 'id'>) => void
@@ -45,16 +45,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
 function ToastItem({ title, description, kind = 'neutral' }: ToastMessage) {
   return (
-    <div className="pointer-events-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-raised)] p-3 shadow-md">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="text-sm font-medium">{title}</p>
-          {description ? (
-            <p className="mt-1 text-xs text-[var(--color-text-muted)]">{description}</p>
-          ) : null}
-        </div>
-        <StatusBadge label={kind} kind={kind} />
-      </div>
+    <div className="pointer-events-auto">
+      <Alert title={title} description={description} kind={kind} dismissible />
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { ModusAppProvider } from './modus/ModusAppProvider'
 import { OnboardingProvider } from './context/OnboardingContext'
 import { DesignReviewProvider } from './context/DesignReviewContext'
 import { UploadDrawingProvider } from './context/UploadDrawingContext'
@@ -7,6 +8,7 @@ import { AppRoutes } from './routes/AppRoutes'
 
 export default function App() {
   return (
+    <ModusAppProvider>
     <OnboardingProvider>
       <UploadDrawingProvider>
         <WorkCenterProvider>
@@ -20,5 +22,6 @@ export default function App() {
         </WorkCenterProvider>
       </UploadDrawingProvider>
     </OnboardingProvider>
+    </ModusAppProvider>
   )
 }

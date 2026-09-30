@@ -8,7 +8,9 @@ export type ProgressListProps = {
 
 export function ProgressList({ items, className = '' }: ProgressListProps) {
   return (
-    <ul className={`divide-y divide-[var(--color-border)] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-raised)] ${className}`}>
+    <ul
+      className={`divide-y divide-[var(--color-border)] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-raised)] ${className}`}
+    >
       {items.map((item) => (
         <li key={item.id} className="flex items-start justify-between gap-3 px-4 py-3">
           <div>

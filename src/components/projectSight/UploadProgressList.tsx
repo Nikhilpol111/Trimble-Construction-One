@@ -1,5 +1,6 @@
-import { Check, Loader2 } from 'lucide-react'
+import { ModusWcLoader } from '@trimble-oss/moduswebcomponents-react'
 import type { UploadProgressStep } from '../../types/uploadDrawing'
+import { Icon } from '../common/Icon'
 
 export function UploadProgressList({ steps }: { steps: UploadProgressStep[] }) {
   return (
@@ -8,17 +9,17 @@ export function UploadProgressList({ steps }: { steps: UploadProgressStep[] }) {
         <li key={step.id} className="flex items-center gap-2.5 py-2 text-[13px]">
           <span className="flex h-5 w-5 shrink-0 items-center justify-center">
             {step.status === 'complete' ? (
-              <Check className="h-4 w-4 text-[var(--ps-success)]" strokeWidth={2.5} />
+              <Icon name="check" size="sm" />
             ) : step.status === 'active' ? (
-              <Loader2 className="h-4 w-4 animate-spin text-[var(--ps-brand)]" />
+              <ModusWcLoader variant="spinner" size="sm" color="primary" customClass="h-4 w-4" />
             ) : (
-              <span className="h-1.5 w-1.5 rounded-full bg-[#cbd5e1]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--modus-wc-color-gray-2)]" />
             )}
           </span>
           <span
             className={
               step.status === 'pending'
-                ? 'text-[#94a3b8]'
+                ? 'text-[var(--modus-wc-color-gray-4)]'
                 : step.status === 'active'
                   ? 'font-medium text-[var(--ps-text)]'
                   : 'text-[var(--ps-text)]'

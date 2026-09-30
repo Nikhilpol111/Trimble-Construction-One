@@ -1,27 +1,11 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import { ModusWcButton } from '@trimble-oss/moduswebcomponents-react'
+import { mapButtonSize, mapButtonVariant, type ButtonSize, type ButtonVariant } from '../../modus/tokenMaps'
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost'
-type ButtonSize = 'sm' | 'md' | 'lg'
-
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'> & {
   variant?: ButtonVariant
   size?: ButtonSize
   children: ReactNode
-}
-
-const variantClasses: Record<ButtonVariant, string> = {
-  primary:
-    'bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] border border-transparent',
-  secondary:
-    'bg-[var(--color-surface-raised)] text-[var(--color-text)] border border-[var(--color-border-strong)] hover:bg-[var(--color-surface)]',
-  ghost:
-    'bg-transparent text-[var(--color-text)] border border-transparent hover:bg-[var(--color-surface)]',
-}
-
-const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'h-8 px-3 text-xs',
-  md: 'h-9 px-4 text-sm',
-  lg: 'h-10 px-5 text-sm',
 }
 
 export function Button({
@@ -30,15 +14,27 @@ export function Button({
   className = '',
   type = 'button',
   children,
-  ...props
+  disabled,
+  onClick,
+  'aria-label': ariaLabel,
 }: ButtonProps) {
+  const mapped = mapButtonVariant(variant)
+
   return (
-    <button
+    <ModusWcButton
+      color={mapped.color}
+      variant={mapped.variant}
+      size={mapButtonSize(size)}
       type={type}
-      className={`inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
-      {...props}
+      disabled={disabled}
+      customClass={className}
+      buttonAriaLabel={typeof ariaLabel === 'string' ? ariaLabel : undefined}
+      onButtonClick={(event) => {
+        if (disabled) return
+        onClick?.(event as unknown as React.MouseEvent<HTMLButtonElement>)
+      }}
     >
       {children}
-    </button>
+    </ModusWcButton>
   )
 }

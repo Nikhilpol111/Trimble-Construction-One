@@ -1,0 +1,18 @@
+/**
+ * Maps legacy prototype CSS variables to Modus 2.0 foundations where screens still reference them.
+ * Prefer Modus tokens directly in new work.
+ */
+:root {
+  --color-surface: var(--modus-wc-color-gray-light, #f1f1f6);
+  --color-surface-raised: var(--modus-wc-color-white, #fff);
+  --color-border: var(--modus-wc-color-gray-0, #e0e1e9);
+  --color-border-strong: var(--modus-wc-color-gray-1, #cbcdd6);
+  --color-text: var(--modus-wc-color-trimble-gray, #252a2e);
+  --color-text-muted: var(--modus-wc-color-gray-6, #6a6e79);
+  --color-accent: var(--modus-wc-color-trimble-blue, #0063a3);
+  --color-accent-hover: var(--modus-wc-color-connect-blue, #00437b);
+}
+
+body {
+  font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+}

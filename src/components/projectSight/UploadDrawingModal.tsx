@@ -1,5 +1,9 @@
-import { Calendar, CheckCircle2, FileText, Sparkles, X } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { drawingSetOptions } from '../../data/projectSightDrawings'
+import { Button } from '../common/Button'
+import { Icon } from '../common/Icon'
+import { Select } from '../common/Select'
+import { TextInput } from '../common/TextInput'
 
 export type UploadDrawingModalProps = {
   open: boolean
@@ -54,65 +58,71 @@ export function UploadDrawingModal({
           <h2 id="upload-drawing-title" className="text-base font-semibold text-[var(--ps-text)]">
             Upload Drawing
           </h2>
-          <button type="button" onClick={onCancel} className="rounded p-1 text-[var(--ps-muted)] hover:bg-[#f8fafc]" aria-label="Close">
-            <X className="h-4 w-4" />
-          </button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            aria-label="Close"
+            onClick={onCancel}
+            className="!min-h-0"
+          >
+            <Icon name="close" size="sm" />
+          </Button>
         </div>
         <div className="space-y-4 px-5 py-4">
           <div className="flex items-center gap-3 rounded-lg border border-[var(--ps-border-light)] bg-[#fafbfc] px-3 py-2.5">
-            <FileText className="h-8 w-8 shrink-0 text-red-500" strokeWidth={1.25} />
+            <Icon name="file" size="lg" className="shrink-0 text-red-500" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-[var(--ps-text)]">{fileName}</p>
               <p className="flex items-center gap-1 text-xs text-[var(--ps-success)]">
-                <CheckCircle2 className="h-3.5 w-3.5" />
+                <Icon name="check" size="sm" />
                 Ready to process
               </p>
             </div>
           </div>
           <div>
             <FilledByAssistBadge />
-            <label className="mb-1 block text-xs font-medium text-[var(--ps-muted)]">Project</label>
-            <input
-              type="text"
-              readOnly
+            <TextInput
               value={project}
-              className="w-full rounded-md border border-[var(--ps-border)] bg-[#f8fafc] px-3 py-2 text-sm text-[var(--ps-text)]"
+              readOnly
+              label="Project"
+              onValueChange={() => undefined}
+              className="[&_.modus-wc-input]:bg-[#f8fafc]"
             />
           </div>
           <div>
             <FilledByAssistBadge />
-            <label className="mb-1 block text-xs font-medium text-[var(--ps-muted)]">Group</label>
-            <input
-              type="text"
-              readOnly
+            <TextInput
               value={group}
-              className="w-full rounded-md border border-[var(--ps-border)] bg-[#f8fafc] px-3 py-2 text-sm text-[var(--ps-text)]"
+              readOnly
+              label="Group"
+              onValueChange={() => undefined}
+              className="[&_.modus-wc-input]:bg-[#f8fafc]"
             />
           </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-[var(--ps-text)]">
-              Drawing set <span className="text-red-500">*</span>
-            </label>
-            <select
+          <div
+            className={
+              needsDrawingSet ? 'rounded-md ring-1 ring-[#fde68a] [&_modus-wc-select]:border-[var(--ps-highlight-field)]' : ''
+            }
+          >
+            <Select
               value={drawingSet}
-              onChange={(e) => onDrawingSetChange(e.target.value)}
-              className={`w-full rounded-md border bg-white px-3 py-2 text-sm outline-none ${
-                needsDrawingSet ? 'border-[var(--ps-highlight-field)] ring-1 ring-[#fde68a]' : 'border-[var(--ps-border)]'
-              }`}
-            >
-              {drawingSetOptions.map((opt) => (
-                <option key={opt.value || 'empty'} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              label="Drawing set *"
+              options={drawingSetOptions.map((opt) => ({ value: opt.value, label: opt.label }))}
+              onValueChange={onDrawingSetChange}
+              required
+            />
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-[var(--ps-text)]">
               Revision date <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--ps-muted)]" />
+              <Icon
+                name="calendar"
+                size="sm"
+                className="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2 text-[var(--ps-muted)]"
+              />
               <input
                 type="date"
                 value={revisionDate}
@@ -125,21 +135,12 @@ export function UploadDrawingModal({
           </div>
         </div>
         <div className="flex justify-end gap-2 border-t border-[var(--ps-border-light)] px-5 py-4">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="rounded-md border border-[var(--ps-border)] px-4 py-2 text-sm font-medium text-[var(--ps-text)]"
-          >
+          <Button type="button" variant="secondary" size="md" onClick={onCancel}>
             Cancel
-          </button>
-          <button
-            type="button"
-            disabled={!uploadEnabled}
-            onClick={onUpload}
-            className="rounded-md bg-[var(--ps-brand)] px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#94a3b8]"
-          >
+          </Button>
+          <Button type="button" variant="primary" size="md" disabled={!uploadEnabled} onClick={onUpload}>
             Upload
-          </button>
+          </Button>
         </div>
       </div>
     </div>

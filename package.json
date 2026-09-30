@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@trimble-oss/moduswebcomponents": "1.19.0",
+    "@trimble-oss/moduswebcomponents-react": "1.19.0-react19",
     "lucide-react": "^1.49.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
