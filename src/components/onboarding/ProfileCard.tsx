@@ -31,7 +31,7 @@ export function ProfileHeroCard({ profile }: { profile: OnboardingProfile }) {
   const initial = profile.name.charAt(0)
 
   return (
-    <div className="overflow-hidden rounded-[var(--setup-radius-lg)] bg-[var(--setup-profile-hero)] px-6 py-5 text-white shadow-sm">
+    <div className="profile-hero overflow-hidden rounded-[var(--setup-radius-lg)] bg-[var(--setup-profile-hero)] px-6 py-5 text-white shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex min-w-0 flex-1 items-start gap-4">
           <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-full bg-white text-2xl font-bold text-[var(--setup-profile-hero)]">
@@ -62,7 +62,7 @@ export function ProfileHeroCard({ profile }: { profile: OnboardingProfile }) {
 
 export function ProfileInfoGrid({ profile }: { profile: OnboardingProfile }) {
   return (
-    <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="profile-grid mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {fields.map(({ key, label, icon: Icon }) => (
         <div
           key={key}

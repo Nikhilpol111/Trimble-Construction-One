@@ -17,7 +17,7 @@ export function AutonomySelector({ value, onChange }: AutonomySelectorProps) {
   const copy = autonomyCopy[value]
 
   return (
-    <div className="rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)]">
+    <div className="autonomy-panel rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)]">
       <div className="grid grid-cols-3 border-b border-[var(--setup-border)]">
         {tabs.map(({ id, label, icon: Icon }) => {
           const active = value === id
@@ -26,6 +26,7 @@ export function AutonomySelector({ value, onChange }: AutonomySelectorProps) {
               key={id}
               type="button"
               onClick={() => onChange(id)}
+              aria-pressed={active}
               className={`flex flex-col items-center gap-1.5 px-3 py-4 text-xs font-semibold transition-colors ${
                 active
                   ? 'border-b-2 border-[var(--setup-brand-mid)] text-[var(--setup-brand-mid)]'
@@ -46,7 +47,7 @@ export function AutonomySelector({ value, onChange }: AutonomySelectorProps) {
               <div
                 key={bar}
                 className={`h-1.5 w-10 rounded-full ${
-                  bar <= copy.filledBars ? 'bg-[#e6a817]' : 'bg-[#e5e7eb]'
+                  bar === copy.filledBars ? 'bg-[#e6a817]' : 'bg-[#e5e7eb]'
                 }`}
               />
             ))}
@@ -73,8 +74,8 @@ export function PermissionsGrid() {
   ]
 
   return (
-    <div className="mt-4 grid gap-4 md:grid-cols-2">
-      <div className="rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)] p-5">
+    <div className="permissions-grid mt-4 grid gap-4 md:grid-cols-2">
+      <div className="autonomy-panel rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)] p-5">
         <p className="text-xs font-bold uppercase tracking-wide text-[var(--setup-success)]">
           ✓ AI can
         </p>
@@ -87,7 +88,7 @@ export function PermissionsGrid() {
           ))}
         </ul>
       </div>
-      <div className="rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)] p-5">
+      <div className="autonomy-panel rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)] p-5">
         <p className="text-xs font-bold uppercase tracking-wide text-[#c0392b]">✕ AI won&apos;t</p>
         <ul className="mt-3 space-y-2.5">
           {wontItems.map((item) => (
@@ -109,7 +110,7 @@ export type MemoryToggleProps = {
 
 export function MemoryToggle({ enabled, onChange }: MemoryToggleProps) {
   return (
-    <div className="mt-4 flex items-center justify-between gap-4 rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)] px-5 py-4">
+    <div className="memory-panel mt-4 flex items-center justify-between gap-4 rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)] px-5 py-4">
       <div>
         <p className="text-sm font-semibold text-[var(--setup-text)]">
           Let me learn how you work (memory)
@@ -121,6 +122,7 @@ export function MemoryToggle({ enabled, onChange }: MemoryToggleProps) {
       <button
         type="button"
         role="switch"
+        aria-label="Let me learn how you work (memory)"
         aria-checked={enabled}
         onClick={() => onChange(!enabled)}
         className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${

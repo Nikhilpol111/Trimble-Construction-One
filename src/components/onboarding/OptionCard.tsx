@@ -2,7 +2,7 @@ import {
   Bell,
   Briefcase,
   Calendar,
-  Check,
+  CircleCheck,
   Clock,
   FileText,
   Inbox,
@@ -40,7 +40,8 @@ export function OptionCard({ option, selected, onSelect }: OptionCardProps) {
     <button
       type="button"
       onClick={onSelect}
-      className={`flex w-full items-center gap-4 rounded-[var(--setup-radius-lg)] border px-4 py-3.5 text-left transition-colors ${
+      aria-pressed={selected}
+      className={`week-option flex w-full items-center gap-4 rounded-[var(--setup-radius-lg)] border px-4 py-3.5 text-left transition-colors ${
         selected
           ? 'border-[var(--setup-brand-mid)] bg-[#f0f7fc] shadow-[inset_0_0_0_1px_var(--setup-brand-mid)]'
           : 'border-[var(--setup-border)] bg-[var(--setup-card)] hover:border-[#c5d3de]'
@@ -59,7 +60,7 @@ export function OptionCard({ option, selected, onSelect }: OptionCardProps) {
       </span>
       {selected ? (
         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--setup-brand-mid)] text-white">
-          <Check className="h-3.5 w-3.5" strokeWidth={3} />
+          <CircleCheck className="h-3.5 w-3.5" strokeWidth={3} />
         </span>
       ) : null}
     </button>
@@ -74,7 +75,7 @@ export type QuestionProgressProps = {
 
 export function QuestionProgress({ current, total }: QuestionProgressProps) {
   return (
-    <div className="mb-6 flex items-center gap-4">
+    <div className="question-progress mb-6 flex items-center gap-4">
       <div className="flex flex-1 gap-1">
         {Array.from({ length: total }, (_, i) => {
           const n = i + 1

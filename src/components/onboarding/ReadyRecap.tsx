@@ -1,4 +1,4 @@
-import { Bell, Check, Clock, Inbox, Lightbulb, Shield, Target, User } from 'lucide-react'
+import { Bell, CircleCheck, Clock, Inbox, Lightbulb, Shield, Target, User } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 export type RecapRow = {
@@ -9,7 +9,7 @@ export type RecapRow = {
 
 export function ReadyRecap({ rows }: { rows: RecapRow[] }) {
   return (
-    <div className="overflow-hidden rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)]">
+    <div className="ready-recap overflow-hidden rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)]">
       <p className="border-b border-[var(--setup-border)] px-5 py-3 text-sm font-medium text-[var(--setup-muted)]">
         Quick recap
       </p>
@@ -28,7 +28,7 @@ export function ReadyRecap({ rows }: { rows: RecapRow[] }) {
               <span className="min-w-0 flex-1 text-sm font-semibold text-[var(--setup-text)]">
                 {row.value}
               </span>
-              <Check className="h-4 w-4 shrink-0 text-[var(--setup-success)]" strokeWidth={2.5} />
+              <CircleCheck className="h-4 w-4 shrink-0 text-[var(--setup-success)]" strokeWidth={2.5} />
             </li>
           )
         })}
@@ -39,8 +39,8 @@ export function ReadyRecap({ rows }: { rows: RecapRow[] }) {
 
 export function ReadySuccessIcon() {
   return (
-    <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--setup-success-bg)] text-[var(--setup-success)]">
-      <Check className="h-5 w-5" strokeWidth={2.5} />
+    <div className="ready-success mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--setup-success-bg)] text-[var(--setup-success)]">
+      <CircleCheck className="h-5 w-5" strokeWidth={2.5} />
     </div>
   )
 }

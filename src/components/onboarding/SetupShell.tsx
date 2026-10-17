@@ -10,7 +10,7 @@ export type SetupShellProps = {
 
 export function SetupShell({ stage, children, contentClassName = '' }: SetupShellProps) {
   return (
-    <div className="setup-root flex h-full min-h-screen bg-[var(--setup-bg)]">
+    <div className={`setup-root setup-stage-${stage} flex h-full min-h-screen bg-[var(--setup-bg)]`}>
       <SetupSidebar currentStage={stage} />
       <div className={`flex min-w-0 flex-1 flex-col overflow-auto ${contentClassName}`}>
         {children}
@@ -37,9 +37,9 @@ export function SetupContent({
   footer,
 }: SetupContentProps) {
   return (
-    <div className="flex min-h-full flex-col px-10 py-8 md:px-14 lg:px-16">
+    <div className="setup-content flex min-h-full flex-col px-10 py-8 md:px-14 lg:px-16">
       <div
-        className={`mx-auto flex w-full flex-1 flex-col ${wide ? 'max-w-[var(--setup-content-wide)]' : 'max-w-[var(--setup-content-max)]'}`}
+        className={`setup-column mx-auto flex w-full flex-1 flex-col ${wide ? 'max-w-[var(--setup-content-wide)]' : 'max-w-[var(--setup-content-max)]'}`}
       >
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--setup-muted-light)]">
           {stepLabel}
@@ -50,8 +50,8 @@ export function SetupContent({
         {description ? (
           <p className="mt-2 text-[15px] text-[var(--setup-muted)]">{description}</p>
         ) : null}
-        <div className="mt-8 flex-1">{children}</div>
-        {footer ? <div className="mt-10 shrink-0">{footer}</div> : null}
+        <div className="setup-body mt-8 flex-1">{children}</div>
+        {footer ? <div className="setup-footer mt-10 shrink-0">{footer}</div> : null}
       </div>
     </div>
   )
@@ -73,7 +73,7 @@ export function SetupNav({
   primaryDisabled,
 }: SetupNavProps) {
   return (
-    <div className="flex items-center justify-between pt-2">
+    <div className="setup-nav flex items-center justify-between pt-2">
       {onBack ? (
         <button
           type="button"

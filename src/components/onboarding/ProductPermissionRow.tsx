@@ -6,6 +6,7 @@ import {
   PenTool,
   ShieldCheck,
 } from 'lucide-react'
+import { licensedProductCount } from '../../data/onboardingDefaults'
 import type { ProductDefinition } from '../../types/onboarding'
 
 const iconMap = {
@@ -27,9 +28,9 @@ export function ProductPermissionRow({ product, granted, onToggle }: ProductPerm
   const Icon = iconMap[product.icon] ?? LayoutGrid
 
   return (
-    <div className="flex items-center gap-4 border-b border-[var(--setup-border)] px-5 py-4 last:border-b-0">
+    <div className="product-row flex items-center gap-4 border-b border-[var(--setup-border)] px-5 py-4 last:border-b-0">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#e8f2fa] text-[var(--setup-brand-mid)]">
-        <Icon className="h-5 w-5" strokeWidth={1.75} />
+        {product.icon === 'business-center' ? <Icon className="h-5 w-5" /> : <img className="product-logo" src={'/onboarding/' + product.icon + '.png'} alt="" />}
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
@@ -48,6 +49,8 @@ export function ProductPermissionRow({ product, granted, onToggle }: ProductPerm
       <button
         type="button"
         onClick={onToggle}
+        aria-pressed={granted}
+        aria-label={`${granted ? 'Revoke' : 'Grant'} ${product.name} access`}
         className={`shrink-0 rounded-md px-4 py-1.5 text-xs font-semibold transition-colors ${
           granted
             ? 'border border-[#b8dcc4] bg-[var(--setup-success-btn)] text-[var(--setup-success-btn-text)]'
@@ -69,13 +72,13 @@ export type ProductsPanelProps = {
 
 export function ProductsPanel({ products, grantedIds, onToggle, onGrantAll }: ProductsPanelProps) {
   return (
-    <div className="overflow-hidden rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)]">
+    <div className="products-panel overflow-hidden rounded-[var(--setup-radius-lg)] border border-[var(--setup-border)] bg-[var(--setup-card)]">
       <div className="flex items-center justify-between gap-3 border-b border-[var(--setup-border)] px-5 py-3.5">
         <div className="flex items-center gap-2 text-sm text-[var(--setup-muted)]">
           <ShieldCheck className="h-4 w-4 text-[var(--setup-brand-light)]" />
           <span>
             From Trimble ID <span className="text-[var(--setup-muted-light)]">·</span>{' '}
-            <span className="font-medium text-[var(--setup-text)]">{products.length} products</span>
+            <span className="font-medium text-[var(--setup-text)]">{licensedProductCount} products</span>
           </span>
         </div>
         <button
@@ -97,3 +100,4 @@ export function ProductsPanel({ products, grantedIds, onToggle, onGrantAll }: Pr
     </div>
   )
 }
+

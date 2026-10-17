@@ -8,7 +8,7 @@ import {
   SignInSocialButton,
 } from '../components/onboarding/SignInLayout'
 import { useOnboarding } from '../context/OnboardingContext'
-import { Checkbox } from '../components/common/Checkbox'
+
 
 export function SignInPage() {
   const navigate = useNavigate()
@@ -22,7 +22,7 @@ export function SignInPage() {
 
   return (
     <SignInBrandedLayout>
-      <div className="flex flex-1 flex-col px-8 py-10 sm:px-10">
+      <div className="signin-content flex flex-1 flex-col px-8 py-10 sm:px-10">
         <TrimbleIdLogo className="mb-10 [&_span]:text-[26px]" />
         <h1 className="text-[26px] font-normal text-[#333]">Sign In</h1>
         <p className="mt-2 text-sm text-[#555]">
@@ -60,7 +60,7 @@ export function SignInPage() {
         <div className="space-y-3">
           <SignInSocialButton icon={<KeyRound className="h-4 w-4" />}>Use a passkey</SignInSocialButton>
           <SignInSocialButton icon={<GoogleIcon />}>Continue with Google</SignInSocialButton>
-          <SignInSocialButton icon={<span className="text-base">&#63743;</span>}>Continue with Apple</SignInSocialButton>
+          <SignInSocialButton icon={<img src="/onboarding/apple.png" alt="" className="h-5 w-5 object-contain" />}>Continue with Apple</SignInSocialButton>
           <SignInSocialButton
             icon={
               <span className="grid h-4 w-4 grid-cols-2 gap-px">
@@ -74,15 +74,10 @@ export function SignInPage() {
             Continue with Microsoft
           </SignInSocialButton>
         </div>
-        <div className="mt-6">
-          <Checkbox
-            checked={state.rememberMe}
-            label="Remember me"
-            onCheckedChange={setRememberMe}
-            className="text-sm text-[#333]"
-          />
+        <div className="signin-remember mt-6">
+          <label className="remember-label"><input type="checkbox" checked={state.rememberMe} onChange={e => setRememberMe(e.target.checked)} />Remember me</label>
         </div>
-        <div className="mt-auto pt-10 text-center text-[11px] leading-relaxed text-[var(--signin-link,#0076b6)]">
+        <div className="signin-footer mt-auto pt-10 text-center text-[11px] leading-relaxed text-[var(--signin-link,#0076b6)]">
           <p>
             <button type="button" className="hover:underline">
               Help

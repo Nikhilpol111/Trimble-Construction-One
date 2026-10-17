@@ -6,7 +6,7 @@ import {
   checkInOptions,
   findWeekLabel,
   morningOptions,
-  productsCatalog,
+  licensedProductCount,
   timeSinkOptions,
 } from '../../data/onboardingDefaults'
 import { useOnboarding } from '../../context/OnboardingContext'
@@ -30,7 +30,7 @@ export function SetupReadyPage() {
       },
       {
         label: 'Products',
-        value: `${state.grantedProducts.length} of ${productsCatalog.length} granted`,
+        value: `${state.grantedProducts.length} of ${licensedProductCount} granted`,
         icon: recapIcons.products,
       },
       {
@@ -64,8 +64,8 @@ export function SetupReadyPage() {
 
   return (
     <SetupShell stage="ready">
-      <div className="flex min-h-full flex-col px-10 py-8 md:px-14 lg:px-16">
-        <div className="mx-auto flex w-full max-w-[var(--setup-content-max)] flex-1 flex-col">
+      <div className="setup-content flex min-h-full flex-col px-10 py-8 md:px-14 lg:px-16">
+        <div className="setup-column mx-auto flex w-full max-w-[var(--setup-content-max)] flex-1 flex-col">
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--setup-muted-light)]">
             Step 5 of 5
           </p>
@@ -76,10 +76,10 @@ export function SetupReadyPage() {
           <p className="mt-2 text-[15px] text-[var(--setup-muted)]">
             Open your dashboard. I&apos;ll have a briefing ready next sign-in.
           </p>
-          <div className="mt-8 flex-1">
+          <div className="setup-body mt-8 flex-1">
             <ReadyRecap rows={recapRows} />
           </div>
-          <div className="mt-10 shrink-0">
+          <div className="setup-footer mt-10 shrink-0">
             <SetupNav
               onBack={() => navigate('/setup/trust')}
               primaryLabel="Let's get started →"
@@ -91,3 +91,4 @@ export function SetupReadyPage() {
     </SetupShell>
   )
 }
+

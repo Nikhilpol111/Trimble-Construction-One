@@ -16,6 +16,9 @@ export const defaultProfile: OnboardingState['profile'] = {
   titleLine: 'Project Manager | Trimble Structural Engineering',
 }
 
+// Trimble ID reports six licenses; the reference exposes five product grants.
+export const licensedProductCount = 6
+
 export const productsCatalog: ProductDefinition[] = [
   {
     id: 'projectsight',
@@ -27,7 +30,7 @@ export const productsCatalog: ProductDefinition[] = [
   {
     id: 'tekla',
     name: 'Tekla',
-    badges: ['Premium', 'Licensed'],
+    badges: ['Structures · Premium', 'Licensed'],
     description: 'Model elements · revisions · drift signals',
     icon: 'tekla',
   },
@@ -52,13 +55,7 @@ export const productsCatalog: ProductDefinition[] = [
     description: 'Concept models · scene comments',
     icon: 'sketchup',
   },
-  {
-    id: 'business-center',
-    name: 'Trimble Business Center',
-    badges: ['Civil', 'Licensed'],
-    description: 'Takeoff · estimating · quantities',
-    icon: 'business-center',
-  },
+
 ]
 
 export const initialGrantedProducts = ['projectsight', 'trimble-connect', 'sketchup']

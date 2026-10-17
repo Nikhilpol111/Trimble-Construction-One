@@ -11,7 +11,8 @@ export type SetupStepProps = {
 export function SetupStep({ number, label, sublabel, isActive, isComplete }: SetupStepProps) {
   return (
     <div
-      className={`flex items-start gap-3 rounded-r-md py-2.5 pl-3 pr-2 ${
+      aria-current={isActive ? 'step' : undefined}
+      className={`setup-step flex items-start gap-3 rounded-r-md py-2.5 pl-3 pr-2 ${
         isActive ? 'bg-[var(--setup-active-bg)]' : ''
       }`}
     >
