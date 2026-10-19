@@ -1,3 +1,4 @@
+import { AssistSymbol } from '../assist/AssistSymbol'
 import {
   Bell,
   ChevronDown,
@@ -7,14 +8,7 @@ import {
   Volume2,
 } from 'lucide-react'
 
-function AssistMark() {
-  return (
-    <span
-      className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-[#f06] via-[#f90] to-[#09f]"
-      aria-hidden
-    />
-  )
-}
+function AssistMark() { return <AssistSymbol /> }
 
 export function WorkCenterTopBar() {
   return (

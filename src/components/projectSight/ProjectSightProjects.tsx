@@ -33,12 +33,12 @@ const projects: ProjectCard[] = [
 export type ProjectSightProjectsProps = {
   selectedId: string
   onSelect: (id: string) => void
-  onContinue: () => void
+  onContinue: (id: string) => void
 }
 
 export function ProjectSightProjects({ selectedId, onSelect, onContinue }: ProjectSightProjectsProps) {
   return (
-    <div className="flex flex-1 flex-col overflow-auto bg-[var(--ps-surface)] p-6 lg:p-8">
+    <div className="ps-projects flex flex-1 flex-col overflow-auto bg-[var(--ps-surface)] p-6 lg:p-8">
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-[22px] font-bold text-[var(--ps-text)]">Projects</h1>
@@ -69,12 +69,14 @@ export function ProjectSightProjects({ selectedId, onSelect, onContinue }: Proje
             <button
               key={project.id}
               type="button"
-              onClick={() => onSelect(project.id)}
+              aria-label={`Open ${project.name}`}
+              aria-pressed={selected}
+              onClick={() => { onSelect(project.id); onContinue(project.id) }}
               className={`relative overflow-hidden rounded-lg border-2 text-left transition-colors ${
                 selected ? 'border-[var(--ps-brand)]' : 'border-transparent shadow-sm ring-1 ring-[var(--ps-border)]'
               }`}
             >
-              <div className={`h-[120px] w-full ${project.imageClass}`} aria-hidden />
+              <img className="project-photo" src={`/upload/${project.id}.jpg`} alt="" />
               <div className="bg-white p-3">
                 <p className="text-sm font-semibold text-[var(--ps-text)]">{project.name}</p>
                 <p className="text-xs text-[var(--ps-muted)]">{project.subtitle}</p>
@@ -102,7 +104,7 @@ export function ProjectSightProjects({ selectedId, onSelect, onContinue }: Proje
       <div className="mt-6 flex justify-end">
         <button
           type="button"
-          onClick={onContinue}
+          onClick={() => onContinue(selectedId)}
           disabled={!selectedId}
           className="rounded-md bg-[var(--ps-brand)] px-5 py-2 text-sm font-semibold text-white disabled:opacity-40"
         >

@@ -90,6 +90,7 @@ export function ProjectSightPage() {
 
   const [selectedProjectId, setSelectedProjectId] = useState('eilans')
   const [modalOpen, setModalOpen] = useState(false)
+  const [viewingDrawing, setViewingDrawing] = useState(false)
 
   const designReviewRoute = designReviewActive && designReviewPsStates.has(designReviewState.flowState)
 
@@ -143,8 +144,8 @@ export function ProjectSightPage() {
     navigate('/work-center')
   }
 
-  function handleContinueProject() {
-    const name = getProjectNameById(selectedProjectId)
+  function handleContinueProject(id = selectedProjectId) {
+    const name = getProjectNameById(id)
     confirmProjectAndContinue(name)
   }
 
@@ -163,7 +164,7 @@ export function ProjectSightPage() {
       main = <ProjectSightOpening />
       break
     case 'confirmProject':
-      breadcrumb = ['ProjectSight', 'Eilans Bungalow', 'Projects']
+      breadcrumb = ['ProjectSight', task.targetProject, 'Projects']
       main = (
         <ProjectSightProjects
           selectedId={selectedProjectId}
@@ -176,9 +177,9 @@ export function ProjectSightPage() {
     case 'missingMetadata':
     case 'metadataReady':
     case 'uploadSuccess':
-      breadcrumb = ['ProjectSight', 'Eilans Bungalow', 'Drawings']
+      breadcrumb = ['ProjectSight', task.targetProject, 'Drawings']
       layout = 'drawings'
-      main = <ProjectSightDrawings onUploadClick={() => setModalOpen(true)} />
+      main = viewingDrawing ? <div className="upload-drawing-details"><button type="button" onClick={() => setViewingDrawing(false)}>← Back to Drawings</button><h1>{task.fileName}</h1><p>{task.targetProject} · {task.group}</p><dl><dt>Drawing set</dt><dd>Architectural — Issued for Construction</dd><dt>Revision date</dt><dd>{task.revisionDate}</dd><dt>Status</dt><dd>Uploaded</dd></dl></div> : <ProjectSightDrawings project={task.targetProject} onUploadClick={() => { setFlowState(task.drawingSet && task.revisionDate ? 'metadataReady' : 'missingMetadata'); setModalOpen(true) }} />
       break
     default:
       main = <ProjectSightOpening />
@@ -198,6 +199,8 @@ export function ProjectSightPage() {
         assistState={flowState}
         assistTask={task}
         onBackToWorkCenter={handleBackToWorkCenter}
+        dimWorkspace={modalOpen || (flowState === 'uploadSuccess' && !viewingDrawing)}
+        onViewDrawing={() => setViewingDrawing(true)}
       />
       <UploadDrawingModal
         open={
@@ -215,7 +218,7 @@ export function ProjectSightPage() {
         onCancel={() => setModalOpen(false)}
         onUpload={completeUpload}
       />
-      {flowState === 'uploadSuccess' ? (
+      {flowState === 'uploadSuccess' && !viewingDrawing ? (
         <UploadSuccessToast fileName={task.fileName} project={task.targetProject} />
       ) : null}
     </>

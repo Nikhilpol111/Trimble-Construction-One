@@ -1,3 +1,4 @@
+import { AssistSymbol } from './AssistSymbol'
 import type { ReactNode } from 'react'
 import { ChevronDown, FileText, Mic, Plus, Send, Sparkles, X } from 'lucide-react'
 import type { UploadFlowState, UploadTask } from '../../types/uploadDrawing'
@@ -19,14 +20,7 @@ export type AssistPanelProps = {
   variant?: 'default' | 'designReview'
 }
 
-function AssistMark() {
-  return (
-    <span
-      className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#f06] via-[#f90] to-[#09f]"
-      aria-hidden
-    />
-  )
-}
+function AssistMark() { return <AssistSymbol/> }
 
 function UploadAssistBody({
   state,
@@ -39,7 +33,7 @@ function UploadAssistBody({
   onViewDrawing?: () => void
   onBackToWorkCenter?: () => void
 }) {
-  const steps = getUploadProgressSteps(state)
+  const steps = getUploadProgressSteps(state, context)
   const showReview =
     state === 'missingMetadata' || state === 'metadataReady'
   const showSuccess = state === 'uploadSuccess'
@@ -50,15 +44,15 @@ function UploadAssistBody({
     state === 'requestSubmitted'
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-lg border border-[var(--ps-border-light)] bg-[#f8fafc] px-3 py-2.5">
+    <div className="upload-assist-body space-y-4">
+      <div className="upload-assist-file rounded-lg border border-[var(--ps-border-light)] bg-[#f8fafc] px-3 py-2.5">
         <div className="flex items-start gap-2">
           <FileText className="mt-0.5 h-4 w-4 shrink-0 text-red-500" strokeWidth={1.5} />
           <div className="min-w-0 text-xs">
             <p className="font-medium text-[var(--ps-text)]">{context.fileName}</p>
             <p className="mt-0.5 text-[var(--ps-muted)]">
               → {context.targetProject}
-              <br />
+
               → {context.targetProduct}
             </p>
           </div>
@@ -66,13 +60,13 @@ function UploadAssistBody({
       </div>
       <UploadProgressList steps={steps} />
       {showCarrying ? (
-        <p className="rounded-lg bg-[#f1f5f9] px-3 py-2.5 text-xs leading-relaxed text-[var(--ps-muted)]">
+        <p className="upload-carrying rounded-lg bg-[#f1f5f9] px-3 py-2.5 text-xs leading-relaxed text-[var(--ps-muted)]">
           Carrying your file into ProjectSight and preparing the upload for you.
         </p>
       ) : null}
       {showReview ? (
         <div
-          className="rounded-lg border border-[var(--ps-warning-border)] bg-[var(--ps-warning-bg)] px-3 py-2.5 text-xs leading-relaxed text-[var(--ps-warning-text)]"
+          className="upload-review rounded-lg border border-[var(--ps-warning-border)] bg-[var(--ps-warning-bg)] px-3 py-2.5 text-xs leading-relaxed text-[var(--ps-warning-text)]"
         >
           <p className="font-semibold">Your review needed</p>
           <p className="mt-1 font-normal">
@@ -83,7 +77,7 @@ function UploadAssistBody({
       ) : null}
       {showSuccess ? (
         <>
-          <div className="rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] px-3 py-2.5 text-xs leading-relaxed text-[#166534]">
+          <div className="upload-confirmation rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] px-3 py-2.5 text-xs leading-relaxed text-[#166534]">
             {context.fileName} was added to the {context.targetProject} project in ProjectSight.
           </div>
           <button
@@ -108,7 +102,7 @@ function UploadAssistBody({
 
 function AssistPanelComposer() {
   return (
-    <div className="space-y-2">
+    <div className="upload-followup space-y-2">
       <div className="rounded-[14px] bg-gradient-to-r from-[#e879f9] via-[#f97316] to-[#38bdf8] p-[1px]">
         <div className="rounded-[13px] border border-transparent bg-white p-3 shadow-sm">
           <textarea
@@ -169,7 +163,7 @@ export function AssistPanel({
 
   return (
     <aside
-      className="ps-root flex w-[var(--ps-assist-width)] shrink-0 flex-col border-l border-[var(--ps-border)] bg-[var(--ps-surface)]"
+      className="ps-root upload-assist-panel flex w-[var(--ps-assist-width)] shrink-0 flex-col border-l border-[var(--ps-border)] bg-[var(--ps-surface)]"
     >
       <div className="flex items-start justify-between gap-2 border-b border-[var(--ps-border)] px-4 py-3">
         <div className="flex min-w-0 items-start gap-2">

@@ -1,148 +1,30 @@
-import { Sparkles } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import { CircleCheck, FileText, Sparkles, X } from 'lucide-react'
 import { drawingSetOptions } from '../../data/projectSightDrawings'
-import { Button } from '../common/Button'
-import { Icon } from '../common/Icon'
-import { Select } from '../common/Select'
-import { TextInput } from '../common/TextInput'
-
 export type UploadDrawingModalProps = {
-  open: boolean
-  fileName: string
-  project: string
-  group: string
-  drawingSet: string
-  revisionDate: string
-  uploadEnabled: boolean
-  onDrawingSetChange: (value: string) => void
-  onRevisionDateChange: (value: string) => void
-  onCancel: () => void
-  onUpload: () => void
+ open:boolean;fileName:string;project:string;group:string;drawingSet:string;revisionDate:string;uploadEnabled:boolean
+ onDrawingSetChange:(value:string)=>void;onRevisionDateChange:(value:string)=>void;onCancel:()=>void;onUpload:()=>void
+}
+function FilledBadge(){return <span className="upload-filled"><Sparkles/>Filled by Assist</span>}
+export function UploadDrawingModal(p:UploadDrawingModalProps){
+ const ref=useRef<HTMLDialogElement>(null)
+ useEffect(()=>{const dialog=ref.current;if(p.open){if(!dialog?.open)dialog?.showModal()}else dialog?.close()},[p.open])
+ return <dialog ref={ref} className="ps-root upload-dialog" aria-labelledby="upload-drawing-title" onCancel={e=>{e.preventDefault();p.onCancel()}}>
+  <header><h2 id="upload-drawing-title">Upload Drawing</h2><button type="button" aria-label="Close upload" onClick={p.onCancel}><X/></button></header>
+  <form onSubmit={e=>{e.preventDefault();if(p.uploadEnabled)p.onUpload()}}>
+   <div className="upload-dialog-fields">
+    <div className="upload-file"><span className="upload-file-icon"><FileText/></span><div><p>{p.fileName}</p><span>Ready to process</span></div><CircleCheck className="upload-file-ready"/></div>
+    <label htmlFor="upload-project">Project <FilledBadge/></label><input id="upload-project" value={p.project} readOnly/>
+    <label htmlFor="upload-group">Group <FilledBadge/></label><input id="upload-group" value={p.group} readOnly/>
+    <label htmlFor="upload-drawing-set">Drawing set <em>*</em></label>
+    <select id="upload-drawing-set" required value={p.drawingSet} data-missing={!p.drawingSet} onChange={e=>p.onDrawingSetChange(e.target.value)}>
+     {drawingSetOptions.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
+    </select>
+    <label htmlFor="upload-revision-date">Revision date <em>*</em></label>
+    <input id="upload-revision-date" type="date" required value={p.revisionDate} data-missing={!p.revisionDate} onInput={e=>p.onRevisionDateChange(e.currentTarget.value)} onChange={e=>p.onRevisionDateChange(e.target.value)}/>
+   </div>
+   <footer><button type="button" onClick={p.onCancel}>Cancel</button><button type="submit" disabled={!p.uploadEnabled}>Upload</button></footer>
+  </form>
+ </dialog>
 }
 
-function FilledByAssistBadge() {
-  return (
-    <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-semibold text-[var(--ps-filled-text)]">
-      <Sparkles className="h-3 w-3" />
-      Filled by Assist
-    </span>
-  )
-}
-
-export function UploadDrawingModal({
-  open,
-  fileName,
-  project,
-  group,
-  drawingSet,
-  revisionDate,
-  uploadEnabled,
-  onDrawingSetChange,
-  onRevisionDateChange,
-  onCancel,
-  onUpload,
-}: UploadDrawingModalProps) {
-  if (!open) return null
-
-  const needsDrawingSet = !drawingSet
-  const needsDate = !revisionDate
-
-  return (
-    <div className="fixed inset-0 z-30 flex items-start justify-center overflow-auto bg-black/25 p-4 pt-[8vh]">
-      <div
-        className="relative w-full max-w-[480px] rounded-lg border border-[var(--ps-border)] bg-white shadow-xl"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="upload-drawing-title"
-      >
-        <div className="flex items-center justify-between border-b border-[var(--ps-border-light)] px-5 py-4">
-          <h2 id="upload-drawing-title" className="text-base font-semibold text-[var(--ps-text)]">
-            Upload Drawing
-          </h2>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            aria-label="Close"
-            onClick={onCancel}
-            className="!min-h-0"
-          >
-            <Icon name="close" size="sm" />
-          </Button>
-        </div>
-        <div className="space-y-4 px-5 py-4">
-          <div className="flex items-center gap-3 rounded-lg border border-[var(--ps-border-light)] bg-[#fafbfc] px-3 py-2.5">
-            <Icon name="file" size="lg" className="shrink-0 text-red-500" />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-[var(--ps-text)]">{fileName}</p>
-              <p className="flex items-center gap-1 text-xs text-[var(--ps-success)]">
-                <Icon name="check" size="sm" />
-                Ready to process
-              </p>
-            </div>
-          </div>
-          <div>
-            <FilledByAssistBadge />
-            <TextInput
-              value={project}
-              readOnly
-              label="Project"
-              onValueChange={() => undefined}
-              className="[&_.modus-wc-input]:bg-[#f8fafc]"
-            />
-          </div>
-          <div>
-            <FilledByAssistBadge />
-            <TextInput
-              value={group}
-              readOnly
-              label="Group"
-              onValueChange={() => undefined}
-              className="[&_.modus-wc-input]:bg-[#f8fafc]"
-            />
-          </div>
-          <div
-            className={
-              needsDrawingSet ? 'rounded-md ring-1 ring-[#fde68a] [&_modus-wc-select]:border-[var(--ps-highlight-field)]' : ''
-            }
-          >
-            <Select
-              value={drawingSet}
-              label="Drawing set *"
-              options={drawingSetOptions.map((opt) => ({ value: opt.value, label: opt.label }))}
-              onValueChange={onDrawingSetChange}
-              required
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-[var(--ps-text)]">
-              Revision date <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <Icon
-                name="calendar"
-                size="sm"
-                className="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2 text-[var(--ps-muted)]"
-              />
-              <input
-                type="date"
-                value={revisionDate}
-                onChange={(e) => onRevisionDateChange(e.target.value)}
-                className={`w-full rounded-md border bg-white py-2 pl-9 pr-3 text-sm outline-none ${
-                  needsDate ? 'border-[var(--ps-highlight-field)] ring-1 ring-[#fde68a]' : 'border-[var(--ps-border)]'
-                }`}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-end gap-2 border-t border-[var(--ps-border-light)] px-5 py-4">
-          <Button type="button" variant="secondary" size="md" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="button" variant="primary" size="md" disabled={!uploadEnabled} onClick={onUpload}>
-            Upload
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}

@@ -5,7 +5,7 @@ import { DashboardWidget } from '../DashboardWidget'
 export function TrimbleConnectProjectsWidget() {
   return (
     <DashboardWidget title="Trimble Connect Projects" productLabel="Trimble Connect">
-      <ul className="space-y-2">
+      <ul className="wc-project-links space-y-2">
         {connectProjects.map((project) => (
           <li key={project.id}>
             <button

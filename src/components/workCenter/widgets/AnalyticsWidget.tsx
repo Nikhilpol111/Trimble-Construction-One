@@ -5,7 +5,7 @@ import { DashboardWidget } from '../DashboardWidget'
 export function AnalyticsWidget() {
   return (
     <DashboardWidget title="Analytics" productLabel="Work Center">
-      <ul className="space-y-1">
+      <ul className="wc-report-links space-y-1">
         {analyticsReportLinks.map((link) => (
           <li key={link.id}>
             <button

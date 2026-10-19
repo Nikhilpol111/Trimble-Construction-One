@@ -6,49 +6,24 @@ import { ProjectSightTopBar } from './ProjectSightTopBar'
 import type { UploadFlowState, UploadTask } from '../../types/uploadDrawing'
 
 export type ProjectSightShellProps = {
-  breadcrumb: string[]
-  layout: 'rail' | 'drawings'
-  glowFrame?: boolean
-  main: ReactNode
-  assistState: UploadFlowState
-  assistTask: UploadTask
-  onBackToWorkCenter: () => void
+ breadcrumb: string[]; layout: 'rail' | 'drawings'; glowFrame?: boolean; main: ReactNode
+ assistState: UploadFlowState; assistTask: UploadTask; onBackToWorkCenter: () => void
+ dimWorkspace?: boolean; onViewDrawing?: () => void
 }
-
-export function ProjectSightShell({
-  breadcrumb,
-  layout,
-  glowFrame = false,
-  main,
-  assistState,
-  assistTask,
-  onBackToWorkCenter,
-}: ProjectSightShellProps) {
-  return (
-    <div className="ps-root flex h-full min-h-screen flex-col bg-[var(--ps-bg)]">
-      <ProjectSightTopBar breadcrumb={breadcrumb} />
-      <div className="flex min-h-0 flex-1">
-        {layout === 'rail' ? (
-          <ProjectSightNavRail />
-        ) : (
-          <>
-            <ProjectSightNavRail activeId="assist" />
-            <ProjectSightProjectSidebar />
-          </>
-        )}
-        <div className="flex min-w-0 flex-1 p-2">
-          <div className={`ps-workspace-frame min-h-0 flex-1 ${glowFrame ? 'ps-workspace-frame--glow' : ''}`}>
-            <div className="ps-workspace-inner min-h-[calc(100vh-var(--ps-topbar-height)-16px)]">{main}</div>
-          </div>
-        </div>
-        <AssistPanel
-          task="Uploading Drawing Document in ProjectSight"
-          state={assistState}
-          context={assistTask}
-          onBackToWorkCenter={onBackToWorkCenter}
-          onViewDrawing={() => undefined}
-        />
-      </div>
+export function ProjectSightShell({breadcrumb,layout,glowFrame=true,main,assistState,assistTask,onBackToWorkCenter,dimWorkspace,onViewDrawing}:ProjectSightShellProps) {
+ return <div className="ps-root upload-shell" data-upload-state={assistState}>
+  <ProjectSightTopBar breadcrumb={breadcrumb}/>
+  <div className="upload-shell-body">
+   <ProjectSightNavRail/>
+   <section className={`ps-workspace-frame ${glowFrame?'ps-workspace-frame--glow':''}`} aria-label="ProjectSight workspace">
+    <div className="upload-workspace-layout">
+     {layout==='drawings' && <ProjectSightProjectSidebar/>}
+     <main className="ps-workspace-inner">{main}</main>
     </div>
-  )
+    {dimWorkspace && <div className="upload-workspace-dim" aria-hidden="true"/>}
+   </section>
+   <AssistPanel task="Uploading Drawing Document in ProjectSight" state={assistState} context={assistTask}
+    onClose={onBackToWorkCenter} onBackToWorkCenter={onBackToWorkCenter} onViewDrawing={onViewDrawing}/>
+  </div>
+ </div>
 }

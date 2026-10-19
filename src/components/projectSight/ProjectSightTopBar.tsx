@@ -1,3 +1,4 @@
+import { AssistSymbol } from '../assist/AssistSymbol'
 import {
   Bell,
   ChevronDown,
@@ -7,14 +8,7 @@ import {
   Volume2,
 } from 'lucide-react'
 
-function AssistMark() {
-  return (
-    <span
-      className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-[#f06] via-[#f90] to-[#09f]"
-      aria-hidden
-    />
-  )
-}
+function AssistMark() { return <AssistSymbol /> }
 
 export type ProjectSightTopBarProps = {
   breadcrumb: string[]
@@ -26,7 +20,7 @@ export function ProjectSightTopBar({ breadcrumb, assistActive = true }: ProjectS
     <header
       className="flex h-[var(--ps-topbar-height)] shrink-0 items-center justify-between border-b border-[var(--ps-border)] bg-[var(--ps-surface)] px-4"
     >
-      <p className="text-sm text-[var(--ps-muted)]">
+      <img className="ps-brand-mark" src="/upload/trimble-mark.png" alt="Trimble" /><p className="text-sm text-[var(--ps-muted)]">
         {breadcrumb.map((part, i) => (
           <span key={part}>
             {i > 0 ? <span className="mx-1.5 text-[#cbd5e1]">/</span> : null}

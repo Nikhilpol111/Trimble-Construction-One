@@ -17,8 +17,8 @@ export function DonutChart({
   let offset = 0
 
   return (
-    <div className="relative shrink-0" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
+    <div className="wc-donut relative shrink-0" style={{ width: size, height: size }}>
+      <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} className="-rotate-90">
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -69,7 +69,7 @@ export function LegendRow({
   compact?: boolean
 }) {
   return (
-    <div className={`flex items-center justify-between gap-2 ${compact ? 'text-[11px]' : 'text-xs'}`}>
+    <div className={`wc-legend flex items-center justify-between gap-2 ${compact ? 'text-[11px]' : 'text-xs'}`}>
       <span className="flex min-w-0 items-center gap-1.5 text-[var(--wc-muted)]">
         <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} />
         <span className="truncate">{label}</span>
@@ -78,3 +78,4 @@ export function LegendRow({
     </div>
   )
 }
+

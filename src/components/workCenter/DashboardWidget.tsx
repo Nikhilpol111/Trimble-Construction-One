@@ -16,7 +16,7 @@ export function DashboardWidget({
 }: DashboardWidgetProps) {
   return (
     <article
-      className={`flex min-h-[220px] flex-col rounded-[8px] border border-[var(--wc-border)] bg-[var(--wc-surface)] ${className}`}
+      className={`wc-widget flex min-h-[220px] flex-col rounded-[8px] border border-[var(--wc-border)] bg-[var(--wc-surface)] ${className}`}
     >
       <div className="flex items-start justify-between gap-2 border-b border-[var(--wc-border-light)] px-4 py-3">
         <div>
@@ -34,6 +34,6 @@ export function DashboardWidget({
 
 export function DashboardGrid({ children }: { children: ReactNode }) {
   return (
-    <div className="grid grid-cols-1 gap-[var(--wc-widget-gap)] min-[1280px]:grid-cols-3">{children}</div>
+    <div className="wc-dashboard-grid grid grid-cols-1 gap-[var(--wc-widget-gap)] min-[1280px]:grid-cols-3">{children}</div>
   )
 }

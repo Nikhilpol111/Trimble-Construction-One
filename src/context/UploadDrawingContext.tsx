@@ -1,5 +1,6 @@
 import {
   createContext,
+  useEffect,
   useCallback,
   useContext,
   useMemo,
@@ -73,39 +74,19 @@ export function UploadDrawingProvider({ children }: { children: ReactNode }) {
     setFlowState('drawings')
   }, [])
 
-  const syncMetadataFlowState = useCallback((next: UploadTask) => {
-    setFlowState((s) => {
-      if (s !== 'missingMetadata' && s !== 'metadataReady') return s
-      return next.drawingSet && next.revisionDate ? 'metadataReady' : 'missingMetadata'
-    })
-  }, [])
-
-  const setDrawingSet = useCallback(
-    (drawingSet: string) => {
-      setTask((t) => {
-        const next = { ...t, drawingSet }
-        syncMetadataFlowState(next)
-        return next
-      })
-    },
-    [syncMetadataFlowState],
-  )
-
-  const setRevisionDate = useCallback(
-    (revisionDate: string) => {
-      setTask((t) => {
-        const next = { ...t, revisionDate }
-        syncMetadataFlowState(next)
-        return next
-      })
-    },
-    [syncMetadataFlowState],
-  )
-
+  useEffect(() => {
+    if (flowState === 'missingMetadata' || flowState === 'metadataReady') {
+      const next = task.drawingSet && task.revisionDate ? 'metadataReady' : 'missingMetadata'
+      if (next !== flowState) setFlowState(next)
+    }
+  }, [task.drawingSet, task.revisionDate, flowState])
+  const setDrawingSet = useCallback((drawingSet: string) => setTask(t => ({...t, drawingSet})), [])
+  const setRevisionDate = useCallback((revisionDate: string) => setTask(t => ({...t, revisionDate})), [])
   const completeUpload = useCallback(() => {
-    setTask((t) => ({ ...t, uploadComplete: true }))
+    if (!task.drawingSet || !task.revisionDate) return
+    setTask(t => ({...t, uploadComplete: true}))
     setFlowState('uploadSuccess')
-  }, [])
+  }, [task.drawingSet, task.revisionDate])
 
   const resetFlow = useCallback(() => {
     setFlowState('idle')

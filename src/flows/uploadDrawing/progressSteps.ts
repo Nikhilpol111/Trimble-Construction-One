@@ -1,4 +1,4 @@
-import type { UploadFlowState, UploadProgressStep } from '../../types/uploadDrawing'
+import type { UploadFlowState, UploadProgressStep, UploadTask } from '../../types/uploadDrawing'
 
 function step(
   id: UploadProgressStep['id'],
@@ -9,12 +9,12 @@ function step(
 }
 
 /** Maps workflow state to Assist progress list (matches reference PNG sequence). */
-export function getUploadProgressSteps(flowState: UploadFlowState): UploadProgressStep[] {
+export function getUploadProgressSteps(flowState: UploadFlowState, context?: UploadTask): UploadProgressStep[] {
   const labels = {
     openProjectSight: 'Open ProjectSight',
-    openProject: 'Open Eilans Bungalow',
+    openProject: `Open ${context?.targetProject ?? 'Eilans Bungalow'}`,
     navigateDrawings: 'Navigate to Drawings',
-    prepareFile: 'Prepare EilansBungalow.pdf',
+    prepareFile: `Prepare ${context?.fileName ?? 'EilansBungalow.pdf'}`,
     waitingDetails: 'Waiting for required details',
     uploadDrawing: 'Upload drawing',
   }
@@ -52,8 +52,8 @@ export function getUploadProgressSteps(flowState: UploadFlowState): UploadProgre
       return [
         step('openProjectSight', labels.openProjectSight, 'complete'),
         step('openProject', labels.openProject, 'complete'),
-        step('navigateDrawings', labels.navigateDrawings, 'complete'),
-        step('prepareFile', labels.prepareFile, 'active'),
+        step('navigateDrawings', labels.navigateDrawings, 'active'),
+        step('prepareFile', labels.prepareFile, 'pending'),
         step('waitingDetails', labels.waitingDetails, 'pending'),
         step('uploadDrawing', labels.uploadDrawing, 'pending'),
       ]

@@ -8,18 +8,18 @@ function DrawingThumbnail() {
       <rect x="12" y="10" width="96" height="60" fill="none" stroke="currentColor" strokeWidth="1" />
       <line x1="12" y1="40" x2="108" y2="40" stroke="currentColor" strokeWidth="0.75" />
       <line x1="60" y1="10" x2="60" y2="70" stroke="currentColor" strokeWidth="0.75" />
-      <rect x="20" y="48" width="28" height="14" fill="none" stroke="currentColor" strokeWidth="0.75" />
+      <rect x="20" y="18" width="24" height="13" fill="none" stroke="currentColor" strokeWidth="0.75" /><circle cx="83" cy="53" r="8" fill="none" stroke="currentColor" />
     </svg>
   )
 }
 
-export function ProjectSightDrawings({ onUploadClick }: { onUploadClick?: () => void }) {
+export function ProjectSightDrawings({ onUploadClick, project = 'Eilans Bungalow' }: { onUploadClick?: () => void; project?: string }) {
   return (
-    <div className="flex flex-1 flex-col overflow-auto bg-[var(--ps-surface)] p-6">
+    <div className="ps-drawings flex flex-1 flex-col overflow-auto bg-[var(--ps-surface)] p-6">
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-[22px] font-bold text-[var(--ps-text)]">Drawings</h1>
-          <p className="mt-0.5 text-sm text-[var(--ps-muted)]">Eilans Bungalow · 6 drawings</p>
+          <p className="mt-0.5 text-sm text-[var(--ps-muted)]">{project} · 6 drawings</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">

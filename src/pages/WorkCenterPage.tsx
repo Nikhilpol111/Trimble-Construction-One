@@ -62,7 +62,7 @@ export function WorkCenterPage() {
 
   return (
     <WorkCenterLayout hideComposer={hideComposer}>
-      <div className="px-6 py-5 lg:px-8">
+      <div className="wc-dashboard px-6 py-5 lg:px-8">
         <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
           <div>
             <h1 className="text-[28px] font-bold leading-none text-[var(--wc-text)]">Hello!</h1>

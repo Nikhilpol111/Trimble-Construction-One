@@ -10,7 +10,7 @@ const toneStyles = {
 export function AccountsPayableWidget() {
   return (
     <DashboardWidget title="Accounts Payable Overview" productLabel="Viewpoint ERP">
-      <ul className="space-y-3">
+      <ul className="wc-batches space-y-3">
         {accountsPayableBatches.map((batch) => {
           const tone = toneStyles[batch.tone]
           return (

@@ -15,7 +15,7 @@ export function WorkCenterLayout({
   hideComposer?: boolean
 }) {
   return (
-    <div className="wc-root flex h-full min-h-screen bg-[var(--wc-bg)]">
+    <div className="wc-root upload-work-center flex h-full min-h-screen bg-[var(--wc-bg)]">
       <WorkCenterSidebar activeNav="home" />
       <div className="flex min-w-0 flex-1 flex-col">
         <WorkCenterTopBar />
