@@ -11,16 +11,16 @@ const widgetTitleMap: Record<DashboardWidgetId, string> = {
   'trimble-connect-projects': 'Trimble Connect P…',
   'on-track': 'On!Track Tool List',
   'recent-activity': 'Recent Activity',
+  'activity-summary': 'Activity Summary',
+  'project-timeline': 'Project Activity Timeline',
 }
 
 export function WidgetLibrary() {
-  const { libraryTab, setLibraryTab, draftLayout, addWidgetToDraft, widgetConfig } =
+  const { libraryTab, setLibraryTab, draftLayout, addWidgetToDraft } =
     useGeneratedWidgets()
   const layout = draftLayout ?? []
 
-  const generatedEntries = layout.includes('recent-activity')
-    ? [{ id: 'recent-activity' as const, label: widgetConfig.title }]
-    : [{ id: 'recent-activity' as const, label: 'Recent Activity — Trimble Connect' }]
+  const generatedEntries = (['recent-activity','activity-summary','project-timeline'] as const).map(id=>({id,label:widgetTitleMap[id]+' — Trimble Connect'}))
 
   return (
     <div className="rounded-xl border border-[var(--wc-border)] bg-white p-4 shadow-sm">

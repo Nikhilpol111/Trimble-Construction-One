@@ -38,7 +38,7 @@ export function GeneratedWidgetOption({
 }: GeneratedWidgetOptionProps) {
   return (
     <div
-      className={`flex min-w-0 flex-1 flex-col rounded-lg border bg-white ${
+      className={`gw-option flex min-w-0 flex-1 flex-col rounded-lg border bg-white ${
         selected ? 'border-[var(--wc-brand-mid)] ring-1 ring-[var(--wc-brand-mid)]' : 'border-[var(--wc-border)]'
       }`}
     >

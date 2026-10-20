@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { ActivitySummaryContent, ActivityTimelineContent } from '../components/generatedWidgets/ActivityListContent'
 import {
   AccountsPayableWidget,
   AnalyticsWidget,
@@ -16,9 +17,9 @@ import {
   WidgetAddedToast,
 } from '../components/generatedWidgets'
 import { useGeneratedWidgets } from '../context/GeneratedWidgetsContext'
-import type { DashboardWidgetId } from '../types/generatedWidgets'
+import type { DashboardWidgetId, GeneratedWidgetOptionId, WidgetConfig } from '../types/generatedWidgets'
 
-function renderWidget(id: DashboardWidgetId, title: string): ReactNode {
+function renderWidget(id: DashboardWidgetId, title: string, configs:Partial<Record<GeneratedWidgetOptionId,WidgetConfig>>): ReactNode {
   switch (id) {
     case 'analytics':
       return <AnalyticsWidget />
@@ -32,8 +33,12 @@ function renderWidget(id: DashboardWidgetId, title: string): ReactNode {
       return <TrimbleConnectProjectsWidget />
     case 'on-track':
       return <OnTrackWidget />
+    case 'activity-summary':
+      return <section className="wc-widget generated-dashboard-widget"><h3>{configs['activity-summary']?.title??'Activity Summary — Trimble Connect'}</h3><ActivitySummaryContent config={configs['activity-summary']}/></section>
+    case 'project-timeline':
+      return <section className="wc-widget generated-dashboard-widget"><h3>{configs['project-timeline']?.title??'Project Activity Timeline — Trimble Connect'}</h3><ActivityTimelineContent config={configs['project-timeline']}/></section>
     case 'recent-activity':
-      return <RecentActivityWidget title={title} />
+      return <RecentActivityWidget title={configs['recent-activity']?.title??title} />
     default:
       return null
   }
@@ -43,7 +48,7 @@ export function WorkCenterPage() {
   const {
     flowState,
     dashboardLayout,
-    widgetConfig,
+    widgetConfig, widgetConfigs,
     openCustomiseDashboard,
   } = useGeneratedWidgets()
 
@@ -78,7 +83,7 @@ export function WorkCenterPage() {
         </div>
         <DashboardGrid>
           {dashboardLayout.map((id) => (
-            <div key={id}>{renderWidget(id, widgetConfig.title)}</div>
+            <div key={id}>{renderWidget(id, widgetConfig.title, widgetConfigs)}</div>
           ))}
         </DashboardGrid>
       </div>

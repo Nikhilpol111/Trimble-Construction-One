@@ -1,160 +1,19 @@
+import { MapPin, AlertTriangle, Lightbulb } from 'lucide-react'
 import type { ComparisonMode } from '../../types/designReview'
 import { useDesignReview } from '../../context/DesignReviewContext'
-
-type SketchUpModelViewProps = {
-  mode: 'select' | 'selected' | 'comparison' | 'findings'
-  comparisonMode?: ComparisonMode
-  onComparisonModeChange?: (mode: ComparisonMode) => void
-}
-
-export function SketchUpModelView({
-  mode,
-  comparisonMode = 'current',
-  onComparisonModeChange,
-}: SketchUpModelViewProps) {
-  const { selectWall } = useDesignReview()
-  const wallSelected = mode === 'selected' || mode === 'comparison' || mode === 'findings'
-  const showPrevious = mode === 'comparison' && comparisonMode === 'previous'
-  const showOverlay = mode === 'comparison' && comparisonMode === 'overlay'
-  const wallX =
-    mode === 'comparison' && comparisonMode === 'previous'
-      ? 348
-      : mode === 'comparison' && comparisonMode === 'overlay'
-        ? 366
-        : mode === 'comparison'
-          ? 366
-          : 366
-
-  return (
-    <div className="dr-model-workspace relative min-h-[480px]">
-      {mode === 'select' ? (
-        <div className="dr-model-banner">
-          <span className="text-amber-600">📍</span>
-          Referenced area highlighted — select the changed wall to inspect
-        </div>
-      ) : null}
-      {mode === 'selected' ? (
-        <div className="absolute left-1/2 top-16 z-10 -translate-x-1/2 rounded-md border border-[var(--ps-border)] bg-white px-3 py-2 text-center shadow-sm">
-          <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--ps-muted)]">
-            Selected entity
-          </p>
-          <p className="text-xs font-semibold text-[var(--ps-text)]">Mechanical Room East Wall</p>
-        </div>
-      ) : null}
-      {mode === 'comparison' ? (
-        <div className="absolute left-4 right-4 top-4 z-10 flex justify-center">
-          <div className="inline-flex rounded-lg border border-[var(--ps-border)] bg-white p-0.5 text-xs font-semibold">
-            {(
-              [
-                ['previous', 'Previous (V17)'],
-                ['current', 'Current (V18)'],
-                ['overlay', 'Overlay'],
-              ] as const
-            ).map(([id, label]) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => onComparisonModeChange?.(id)}
-                className={`rounded-md px-3 py-1.5 ${
-                  comparisonMode === id
-                    ? 'bg-[var(--ps-active-bg)] text-[var(--ps-brand)]'
-                    : 'text-[var(--ps-muted)]'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null}
-      <svg viewBox="0 0 520 360" className="h-[min(420px,70vh)] w-full max-w-2xl px-4" role="img">
-        <defs>
-          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" strokeWidth="0.5" />
-          </pattern>
-        </defs>
-        <rect width="520" height="360" fill="url(#grid)" />
-        {/* Structure */}
-        <g opacity="0.85">
-          <path d="M120 260 L260 190 L400 260 L260 330 Z" fill="#cbd5e1" stroke="#94a3b8" />
-          <path d="M260 190 L260 120 L400 190 L400 260 Z" fill="#94a3b8" stroke="#64748b" />
-          <path d="M120 260 L120 190 L260 120 L260 190 Z" fill="#64748b" stroke="#475569" />
-          <line x1="120" y1="260" x2="400" y2="260" stroke="#475569" strokeWidth="2" />
-          <line x1="260" y1="190" x2="260" y2="330" stroke="#475569" strokeWidth="2" />
-        </g>
-        {/* Mechanical room highlight */}
-        <rect x="292" y="148" width="56" height="44" fill="#fef3c7" fillOpacity="0.35" stroke="#fbbf24" strokeDasharray="4 3" />
-        {/* Equipment */}
-        <rect x="304" y="162" width="28" height="18" fill="#d97706" rx="2" />
-        {/* Wall - previous position (overlay) */}
-        {showOverlay ? (
-          <rect x="348" y="148" width="8" height="44" fill="#94a3b8" fillOpacity="0.55" stroke="#64748b" strokeDasharray="3 2" />
-        ) : null}
-        {/* East wall — use SVG g + rect (HTML button inside SVG is not clickable in most browsers) */}
-        <g
-          role="button"
-          tabIndex={mode === 'select' ? 0 : -1}
-          aria-label="Mechanical Room East Wall"
-          className={mode === 'select' ? 'cursor-pointer outline-none' : ''}
-          onClick={mode === 'select' ? selectWall : undefined}
-          onKeyDown={(e) => {
-            if (mode !== 'select') return
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              selectWall()
-            }
-          }}
-        >
-          {mode === 'select' ? (
-            <>
-              <rect
-                x="328"
-                y="136"
-                width="48"
-                height="68"
-                fill="#fbbf24"
-                fillOpacity="0.15"
-                stroke="#f59e0b"
-                strokeWidth="1.5"
-                strokeDasharray="5 3"
-                rx="2"
-              />
-              <rect
-                x="328"
-                y="136"
-                width="48"
-                height="68"
-                fill="transparent"
-                style={{ pointerEvents: 'all' }}
-              />
-            </>
-          ) : null}
-          <rect
-            x={showPrevious ? 348 : wallX}
-            y="148"
-            width="8"
-            height="44"
-            fill={wallSelected ? '#0076a8' : '#fde68a'}
-            stroke={wallSelected ? '#003b5c' : '#f59e0b'}
-            strokeWidth={wallSelected ? 2 : 1}
-            style={{ pointerEvents: 'all' }}
-          />
-        </g>
-      </svg>
-      {mode === 'select' ? (
-        <button
-          type="button"
-          onClick={selectWall}
-          className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 rounded-md border border-[#f59e0b] bg-white px-4 py-2 text-sm font-semibold text-[#92400e] shadow-md hover:bg-[#fffbeb]"
-        >
-          Select Mechanical Room East Wall
-        </button>
-      ) : null}
-    </div>
-  )
+import { BuildingModel } from './BuildingModel'
+export function SketchUpModelView({mode,comparisonMode='current',onComparisonModeChange}:{mode:'select'|'selected'|'comparison'|'findings';comparisonMode?:ComparisonMode;onComparisonModeChange?:(m:ComparisonMode)=>void}){
+ const {selectWall,state}=useDesignReview()
+ return <div className="dr-model-workspace">
+ {mode==='select'&&<div className="dr-model-banner"><MapPin/> Referenced area highlighted - select the changed wall to inspect</div>}
+ {mode==='selected'&&<div className="dr-selected-entity"><span>SELECTED ENTITY</span><p>Mechanical Room East Wall</p></div>}
+ {mode==='comparison'&&state.flowState==='sketchupComparison'&&<div className="dr-comparison-tabs">View : {(['previous','current','overlay'] as const).map(m=><button key={m} aria-pressed={comparisonMode===m} onClick={()=>onComparisonModeChange?.(m)}>{m==='previous'?'Previous (V17)':m==='current'?'Current (V18)':'Overlay'}</button>)}</div>}
+ <BuildingModel selected={mode!=='select'} previous={mode==='comparison'&&comparisonMode==='previous'} overlay={mode==='comparison'&&comparisonMode==='overlay'} onSelect={mode==='select'?selectWall:undefined}/>
+ </div>
 }
 
 export function ImpactFindingsMainView() {
+  const {state,setFindingsAction,selectEvidence,setSuggestedAction}=useDesignReview()
   const findings = [
     {
       num: 1,
@@ -182,37 +41,39 @@ export function ImpactFindingsMainView() {
     },
   ]
 
+  const visibleFindings=findings.filter(f=>state.selectedSources.includes(f.num===1?'sketchup':f.num===2?'trimbleConnect':'projectSight'))
   return (
-    <div className="p-6 lg:p-8">
+    <div className="dr-findings p-6 lg:p-8">
       <div className="flex flex-wrap items-start gap-3">
-        <span className="text-amber-500">⚠</span>
+        <span className="text-amber-500"><AlertTriangle/></span>
         <div className="min-w-0 flex-1">
-          <h1 className="text-xl font-bold text-[var(--ps-text)]">Coordination impact detected</h1>
+          <h1 className="text-xl font-bold text-[var(--ps-text)]">{visibleFindings.length?'Coordination impact detected':'No matching evidence found'}</h1>
           <p className="mt-1 max-w-2xl text-sm text-[var(--ps-muted)]">
             The mechanical-room wall shift may affect the currently documented MEP service clearance.
           </p>
           <p className="mt-2 text-xs text-[var(--ps-muted)]">
             <span className="mr-2 inline-flex rounded-full bg-[#dcfce7] px-2 py-0.5 font-semibold text-[#166534]">
-              Confidence: High
+              Confidence: {state.selectedSources.includes('sketchup')&&state.selectedSources.includes('trimbleConnect')&&state.selectedSources.includes('projectSight')?'High':'Limited scope'}
             </span>
-            Based on 4 connected project sources.
+            Based on {visibleFindings.length} connected evidence records.
           </p>
         </div>
       </div>
+      {visibleFindings.length===0&&<p>No matching evidence was found in the selected document sources. Choose model, comment, or ProjectSight sources to investigate.</p>}
       <div className="mt-6 grid gap-3 md:grid-cols-2">
-        {findings.map((f) => (
+        {visibleFindings.map((f) => (
           <div key={f.num} className="dr-finding-card">
             <span className="mb-2 inline-flex h-6 w-6 items-center justify-center rounded bg-[var(--ps-active-bg)] text-[11px] font-bold text-[var(--ps-brand)]">
               {f.num}
             </span>
             <p className="dr-finding-card__label">{f.label}</p>
             <p className="dr-finding-card__body">{f.body}</p>
-            <span className="dr-source-link">{f.source} ↗</span>
+            <button type="button" className="dr-source-link" onClick={()=>{if(f.num===1)setSuggestedAction('compare');else if(f.num===2)setSuggestedAction('comments');else {selectEvidence(f.num===3?'drawing':'rfi');setFindingsAction('inspect')}}}>{f.source} ↗</button>
           </div>
         ))}
       </div>
       <div className="mt-6 rounded-lg border border-[#fed7aa] bg-[#fff7ed] px-4 py-3 text-sm text-[#9a3412]">
-        💡 I found evidence of a coordination risk, but final constructability should be verified by the
+        <Lightbulb className="inline-block"/> I found evidence of a coordination risk, but final constructability should be verified by the
         project team.
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { generatedWidgetsIntentText } from '../../flows/generatedWidgets'
 import { useGeneratedWidgets } from '../../context/GeneratedWidgetsContext'
@@ -12,17 +13,36 @@ const OPTIONS = [
 
 export function GeneratedWidgetPanel() {
   const {
-    request,
+    request, generationVersion, updateWidgetConfig,
     selectedOptionId,
     selectOption,
     openPreview,
     regenerateOptions,
     cancelFlow,
   } = useGeneratedWidgets()
+  const [changes,setChanges]=useState('')
+  const [feedback,setFeedback]=useState('')
+  function regenerate(){
+   const t=changes.toLowerCase()
+   const patch:Partial<import('../../types/generatedWidgets').WidgetConfig>={}
+   if(t.includes('comment'))patch.activityType='Comments only'
+   else if(t.includes('upload'))patch.activityType='Uploads only'
+   else if(t.includes('revision'))patch.activityType='Revisions only'
+   else if(t.includes('all activity'))patch.activityType='All activity'
+   if(t.includes('north ridge'))patch.projectFilter='North Ridge Infrastructure'
+   else if(t.includes('eilans'))patch.projectFilter='Eilans Bungalow'
+   else if(t.includes('all project'))patch.projectFilter='All accessible projects'
+   if(t.includes('24 hour'))patch.timeRange='Last 24 hours'
+   else if(t.includes('30 day'))patch.timeRange='Last 30 days'
+   else if(t.includes('7 day'))patch.timeRange='Last 7 days'
+   if(Object.keys(patch).length){updateWidgetConfig(patch);setFeedback('Preview filters updated. Review your widget before adding it.')}
+   else setFeedback(changes.trim()?'Use the preview controls to change the title, project, activity type, or time range.':'Options refreshed from the same sample activity data.')
+   regenerateOptions()
+  }
   const displayRequest = request || generatedWidgetsIntentText
 
   return (
-    <div className="gw-overlay-root">
+    <div className="gw-overlay-root gw-options">
       <div className="gw-gradient-shell max-h-[min(720px,calc(100vh-120px))] w-full max-w-[1040px] overflow-hidden">
         <div className="gw-panel-inner flex max-h-[inherit] flex-col overflow-y-auto p-5">
           <div className="mb-4 flex justify-end">
@@ -48,7 +68,7 @@ export function GeneratedWidgetPanel() {
                 selected={selectedOptionId === opt.id}
                 onSelect={() => selectOption(opt.id)}
                 onPreview={() => openPreview(opt.id)}
-                onRegenerate={regenerateOptions}
+                onRegenerate={regenerate}
               />
             ))}
           </div>
@@ -58,12 +78,13 @@ export function GeneratedWidgetPanel() {
               <AssistMark className="h-4 w-4" />
               <input
                 type="text"
-                placeholder="Describe any changes…"
+                aria-label="Describe widget changes" value={changes} onChange={e=>setChanges(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')regenerate()}} placeholder="Describe any changes…"
                 className="flex-1 border-0 bg-transparent text-xs outline-none placeholder:text-[var(--wc-muted-light)]"
               />
             </div>
           </div>
 
+          {(feedback||generationVersion>0)&&<p role="status" className="gw-generation-feedback">{feedback||'Options refreshed from the same sample activity data.'}</p>}
           <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-[var(--wc-border-light)] pt-4">
             <button
               type="button"
@@ -75,7 +96,7 @@ export function GeneratedWidgetPanel() {
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={regenerateOptions}
+                onClick={regenerate}
                 className="inline-flex items-center gap-1.5 rounded-md border border-[var(--wc-border)] bg-white px-4 py-2 text-xs font-semibold text-[var(--wc-text)]"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
@@ -83,7 +104,7 @@ export function GeneratedWidgetPanel() {
               </button>
               <button
                 type="button"
-                disabled={selectedOptionId !== 'recent-activity'}
+                disabled={!selectedOptionId}
                 onClick={() => openPreview()}
                 className="rounded-md bg-[var(--wc-brand)] px-4 py-2 text-xs font-semibold text-white disabled:opacity-40"
               >

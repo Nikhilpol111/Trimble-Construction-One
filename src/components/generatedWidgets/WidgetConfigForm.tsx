@@ -16,7 +16,7 @@ export function WidgetConfigForm({
     <div className="space-y-4">
       <Field label="Widget title">
         <input
-          type="text"
+          type="text" aria-label="Widget title"
           value={config.title}
           onChange={(e) => onChange({ title: e.target.value })}
           className="gw-field-input"
@@ -24,7 +24,7 @@ export function WidgetConfigForm({
       </Field>
       <Field label="Project filter">
         <select
-          value={config.projectFilter}
+          aria-label="Project filter" value={config.projectFilter}
           onChange={(e) => onChange({ projectFilter: e.target.value })}
           className="gw-field-input"
         >
@@ -35,7 +35,7 @@ export function WidgetConfigForm({
       </Field>
       <Field label="Activity type">
         <select
-          value={config.activityType}
+          aria-label="Activity type" value={config.activityType}
           onChange={(e) => onChange({ activityType: e.target.value })}
           className="gw-field-input"
         >
@@ -46,7 +46,7 @@ export function WidgetConfigForm({
       </Field>
       <Field label="Time range">
         <select
-          value={config.timeRange}
+          aria-label="Time range" value={config.timeRange}
           onChange={(e) => onChange({ timeRange: e.target.value })}
           className="gw-field-input"
         >
@@ -61,11 +61,11 @@ export function WidgetConfigForm({
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div>
-      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-[var(--wc-muted)]">
+    <label>
+      <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-[var(--wc-muted)]">
         {label}
-      </label>
+      </span>
       {children}
-    </div>
+    </label>
   )
 }

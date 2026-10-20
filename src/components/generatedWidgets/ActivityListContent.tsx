@@ -1,7 +1,16 @@
+import { useGeneratedWidgets } from '../../context/GeneratedWidgetsContext'
 import { connectActivityItems } from '../../flows/generatedWidgets'
-import type { ConnectActivityItem } from '../../types/generatedWidgets'
+import type { ConnectActivityItem, WidgetConfig } from '../../types/generatedWidgets'
 import { AssistMark } from './AssistMark'
 
+function useFilteredActivity(config?:WidgetConfig){
+ const {widgetConfig:currentConfig}=useGeneratedWidgets()
+ const widgetConfig=config??currentConfig
+ return connectActivityItems.filter((item,index)=>{
+ const project=index%2===0?'North Ridge Infrastructure':'Eilans Bungalow'
+ return (widgetConfig.projectFilter==='All accessible projects'||widgetConfig.projectFilter===project)&&(widgetConfig.activityType==='All activity'||(widgetConfig.activityType==='Uploads only'&&item.verb==='uploaded')||(widgetConfig.activityType==='Comments only'&&item.verb==='commented on')||(widgetConfig.activityType==='Revisions only'&&item.verb==='added revision'))
+ })
+}
 function ActivityAvatar({ item }: { item: ConnectActivityItem }) {
   return (
     <span
@@ -13,10 +22,12 @@ function ActivityAvatar({ item }: { item: ConnectActivityItem }) {
   )
 }
 
-export function ActivityListCompact({ className = '' }: { className?: string }) {
+export function ActivityListCompact({ className = '', config }: { className?: string; config?:WidgetConfig }) {
+ const items=useFilteredActivity(config)
   return (
     <ul className={`space-y-2.5 ${className}`}>
-      {connectActivityItems.map((item) => (
+      {items.length===0&&<li>No activity matches these filters.</li>}
+      {items.map((item) => (
         <li key={item.id} className="flex items-start gap-2">
           <ActivityAvatar item={item} />
           <div className="min-w-0 flex-1">
@@ -44,6 +55,7 @@ export function ActivityListDashboard({
   showGeneratedBadge?: boolean
   className?: string
 }) {
+  const items=useFilteredActivity()
   return (
     <div className={className}>
       <div className="mb-3 flex items-start justify-between gap-2">
@@ -58,7 +70,8 @@ export function ActivityListDashboard({
         ) : null}
       </div>
       <ul className="space-y-3">
-        {connectActivityItems.map((item) => (
+        {items.length===0&&<li>No activity matches these filters.</li>}
+      {items.map((item) => (
           <li key={item.id} className="flex items-start gap-2.5">
             <ActivityAvatar item={item} />
             <div className="min-w-0 flex-1">
@@ -82,12 +95,13 @@ export function ActivityListDashboard({
   )
 }
 
-export function ActivityTimelineContent({ className = '' }: { className?: string }) {
+export function ActivityTimelineContent({ className = '', config }: { className?: string; config?:WidgetConfig }) {
+ const items=useFilteredActivity(config)
   return (
     <ul className={`space-y-3 ${className}`}>
-      {connectActivityItems.map((item, index) => (
+      {items.map((item, index) => (
         <li key={item.id} className="relative flex gap-2 pl-1">
-          {index < connectActivityItems.length - 1 ? (
+          {index < items.length - 1 ? (
             <span
               className="absolute left-[5px] top-3 h-[calc(100%+4px)] w-px bg-[var(--wc-border)]"
               aria-hidden
@@ -109,14 +123,18 @@ export function ActivityTimelineContent({ className = '' }: { className?: string
   )
 }
 
-export function ActivitySummaryContent({ className = '' }: { className?: string }) {
+export function ActivitySummaryContent({ className = '', config }: { className?: string; config?:WidgetConfig }) {
+ const {widgetConfig:currentConfig}=useGeneratedWidgets()
+ const effective=config??currentConfig
+ const items=useFilteredActivity(config)
+ const filtered=effective.projectFilter!=='All accessible projects'||effective.activityType!=='All activity'
   const stats = [
-    { label: 'FILES UPLOADED', value: 12 },
-    { label: 'COMMENTS ADDED', value: 8 },
-    { label: 'PROJECT UPDATES', value: 5 },
-    { label: 'ACTIVE TODAY', value: 9 },
+    { label: 'FILES UPLOADED', value: filtered?items.filter(x=>x.verb==='uploaded').length:12 },
+    { label: 'COMMENTS ADDED', value: filtered?items.filter(x=>x.verb==='commented on').length:8 },
+    { label: 'PROJECT UPDATES', value: filtered?items.filter(x=>x.verb==='added revision').length:5 },
+    { label: 'ACTIVE TODAY', value: filtered?items.length:9 },
   ]
-  const bars = [42, 68, 35, 55]
+  const bars = [30,46,36,57,41,66,52]
 
   return (
     <div className={className}>

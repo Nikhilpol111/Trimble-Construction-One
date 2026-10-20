@@ -27,6 +27,8 @@ type GeneratedWidgetsContextValue = {
   request: string
   selectedOptionId: GeneratedWidgetOptionId | null
   widgetConfig: WidgetConfig
+  widgetConfigs: Partial<Record<GeneratedWidgetOptionId,WidgetConfig>>
+  generationVersion: number
   dashboardLayout: DashboardWidgetId[]
   showAddedToast: boolean
   libraryTab: 'generated' | 'trimble'
@@ -89,16 +91,18 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
     persisted?.recentActivityAdded ?? false,
   )
   const [draftLayout, setDraftLayout] = useState<DashboardWidgetId[] | null>(null)
-  const [, setRegenerateTick] = useState(0)
+  const [generationVersion, setRegenerateTick] = useState(0)
+  const [widgetConfigs,setWidgetConfigs]=useState<Partial<Record<GeneratedWidgetOptionId,WidgetConfig>>>(persisted?.widgetConfigs??{'recent-activity':persisted?.widgetConfig??defaultWidgetConfig})
+  useEffect(()=>{if(selectedOptionId)setWidgetConfigs(c=>({...c,[selectedOptionId]:widgetConfig}))},[selectedOptionId,widgetConfig])
 
   useEffect(() => {
     persist({
       dashboardLayout,
-      widgetConfig,
+      widgetConfig, widgetConfigs,
       selectedGeneratedWidget: selectedOptionId,
       recentActivityAdded: dashboardLayout.includes('recent-activity'),
     })
-  }, [dashboardLayout, widgetConfig, selectedOptionId])
+  }, [dashboardLayout, widgetConfig, widgetConfigs, selectedOptionId])
 
   const beginFromWorkCenter = useCallback(
     (prompt: string) => {
@@ -108,10 +112,11 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
       setCurrentPrompt(trimmed)
       setActiveFlow('generatedWidgets')
       setSelectedOptionId('recent-activity')
+      setWidgetConfig(widgetConfigs['recent-activity']??defaultWidgetConfig)
       setFlowState('generatedOptions')
       return true
     },
-    [setActiveFlow, setCurrentPrompt],
+    [setActiveFlow, setCurrentPrompt, widgetConfigs],
   )
 
   const cancelFlow = useCallback(() => {
@@ -121,13 +126,17 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
 
   const selectOption = useCallback((id: GeneratedWidgetOptionId) => {
     setSelectedOptionId(id)
-  }, [])
+    setWidgetConfig(widgetConfigs[id]??{...defaultWidgetConfig,title:id==='activity-summary'?'Activity Summary — Trimble Connect':id==='project-timeline'?'Project Activity Timeline — Trimble Connect':defaultWidgetConfig.title})
+  }, [widgetConfigs])
 
   const openPreview = useCallback(
     (id?: GeneratedWidgetOptionId) => {
       const next = id ?? selectedOptionId
       if (!next) return
       setSelectedOptionId(next)
+      if (next !== selectedOptionId) {
+        setWidgetConfig(widgetConfigs[next]??{...defaultWidgetConfig,title:next==='activity-summary'?'Activity Summary — Trimble Connect':next==='project-timeline'?'Project Activity Timeline — Trimble Connect':defaultWidgetConfig.title})
+      }
       if (next === 'recent-activity') {
         setWidgetConfig((c) => ({
           ...c,
@@ -136,7 +145,7 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
       }
       setFlowState('widgetPreview')
     },
-    [selectedOptionId],
+    [selectedOptionId,widgetConfigs],
   )
 
   const backToOptions = useCallback(() => {
@@ -145,7 +154,7 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
 
   const regenerateOptions = useCallback(() => {
     setRegenerateTick((t) => t + 1)
-    setSelectedOptionId('recent-activity')
+    setFlowState('generatedOptions')
   }, [])
 
   const updateWidgetConfig = useCallback((patch: Partial<WidgetConfig>) => {
@@ -153,10 +162,11 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
   }, [])
 
   const addToDashboard = useCallback(() => {
-    if (!dashboardLayout.includes('recent-activity')) {
+    if (!selectedOptionId) return
+    if (!dashboardLayout.includes(selectedOptionId)) {
       setDashboardLayout((layout) => {
         const next = [...layout]
-        next.splice(RECENT_ACTIVITY_INSERT_INDEX, 0, 'recent-activity')
+        next.splice(RECENT_ACTIVITY_INSERT_INDEX, 0, selectedOptionId)
         return next
       })
       setRecentActivityIsNew(true)
@@ -164,7 +174,7 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
     setFlowState('idle')
     setActiveFlow(null)
     setShowAddedToast(true)
-  }, [dashboardLayout, setActiveFlow])
+  }, [dashboardLayout, selectedOptionId, setActiveFlow])
 
   const dismissAddedToast = useCallback(() => {
     setShowAddedToast(false)
@@ -175,7 +185,7 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
     setDraftLayout([...dashboardLayout])
     setFlowState('dashboardCustomise')
     setActiveFlow('customiseWidgets')
-  }, [dashboardLayout, setActiveFlow])
+  }, [dashboardLayout, selectedOptionId, setActiveFlow])
 
   const cancelCustomise = useCallback(() => {
     setDraftLayout(null)
@@ -219,7 +229,7 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
       flowState,
       request,
       selectedOptionId,
-      widgetConfig,
+      widgetConfig, widgetConfigs, generationVersion,
       dashboardLayout,
       showAddedToast,
       libraryTab,
@@ -246,7 +256,7 @@ export function GeneratedWidgetsProvider({ children }: { children: ReactNode }) 
       flowState,
       request,
       selectedOptionId,
-      widgetConfig,
+      widgetConfig, widgetConfigs, generationVersion,
       dashboardLayout,
       showAddedToast,
       libraryTab,

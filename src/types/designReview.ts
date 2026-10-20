@@ -33,10 +33,14 @@ export type DraftIssue = {
   description: string
   priority: string
   assignee: string
+  includedEvidence?: number[]
   dueDate: string
 }
 
 export type DesignReviewState = {
+  evidenceSource: 'rfi' | 'drawing'
+  issueDetailsOpen: boolean
+  includedEvidence: number[]
   currentTask: string
   project: string
   currentProduct: DesignReviewProduct
@@ -61,6 +65,9 @@ export const defaultDraftIssue: DraftIssue = {
 }
 
 export const defaultDesignReviewState: DesignReviewState = {
+  evidenceSource: 'rfi',
+  issueDetailsOpen: false,
+  includedEvidence: [0,1,2,3],
   currentTask: designReviewIntentText,
   project: designReviewProject,
   currentProduct: 'Work Center',

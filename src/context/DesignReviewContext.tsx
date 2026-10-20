@@ -24,6 +24,8 @@ import {
 import { useWorkCenter } from './WorkCenterContext'
 
 type DesignReviewContextValue = {
+  selectEvidence: (source:'rfi'|'drawing')=>void
+  openIssue: ()=>void
   state: DesignReviewState
   isActive: boolean
   taskTitle: typeof designReviewTaskTitle
@@ -141,11 +143,17 @@ export function DesignReviewProvider({ children }: { children: ReactNode }) {
 
   const setSuggestedAction = useCallback(
     (action: 'compare' | 'comments' | 'impact' | 'explain') => {
-      if (action === 'compare') {
-        patch({ flowState: 'sketchupComparison', comparisonMode: 'current' })
+      if (action === 'comments') {
+        patchAndNavigate({flowState:'connectContext'},'/trimble-connect')
+      } else if (action === 'explain') {
+        patch({flowState:'sketchupComparison',comparisonMode:'overlay'})
+      } else if (action === 'impact') {
+        patch({flowState:'sourcePermission'})
+      } else if (action === 'compare') {
+        patch({ flowState: 'sketchupComparison', comparisonMode: 'previous' })
       }
     },
-    [patch],
+    [patch,patchAndNavigate],
   )
 
   const setComparisonMode = useCallback(
@@ -184,22 +192,26 @@ export function DesignReviewProvider({ children }: { children: ReactNode }) {
     (action: 'inspect' | 'continue' | 'reviewActions') => {
       if (action === 'inspect') {
         patchAndNavigate({ flowState: 'evidenceInspection' }, '/project-sight')
+      } else if (action === 'continue') {
+        patch({flowState:'sourcePermission'})
       } else if (action === 'reviewActions') {
         patchAndNavigate(
-          { flowState: 'issueDraft', draftIssue: { ...defaultDraftIssue } },
+          { flowState: 'issueDraft', includedEvidence:[...(state.selectedSources.includes('sketchup')?[0]:[]),...(state.selectedSources.includes('trimbleConnect')?[1]:[]),...(state.selectedSources.includes('projectSight')?[2,3]:[])], draftIssue: { ...defaultDraftIssue, description: [state.selectedSources.includes('sketchup')?'The Mechanical Room East Wall shifted approximately 450 mm east in NorthRidge_Design_v18. This may reduce the adjacent MEP service clearance.':'',state.selectedSources.includes('trimbleConnect')?'Alex Morgan previously flagged the mechanical room service clearance.':'',state.selectedSources.includes('projectSight')?'Drawing A-204 still reflects the previous wall position, and RFI-087 concerns the minimum clearance in this area.':'','Recommend coordination review before construction.'].filter(Boolean).join(' ') } },
           '/project-sight',
         )
       }
     },
-    [patchAndNavigate],
+    [patchAndNavigate, patch, state.selectedSources],
   )
 
   const returnToImpactSummary = useCallback(() => {
     patchAndNavigate({ flowState: 'impactFindings' }, '/sketchup')
   }, [patchAndNavigate])
 
+  const selectEvidence=useCallback((source:'rfi'|'drawing')=>patch({evidenceSource:source}),[patch])
+  const openIssue=useCallback(()=>patch({issueDetailsOpen:true}),[patch])
   const updateDraftIssue = useCallback((patchIssue: Partial<DraftIssue>) => {
-    setState((s) => ({ ...s, draftIssue: { ...s.draftIssue, ...patchIssue } }))
+    setState((s) => ({ ...s, includedEvidence:patchIssue.includedEvidence??s.includedEvidence, draftIssue: { ...s.draftIssue, ...patchIssue } }))
   }, [])
 
   const createIssue = useCallback(() => {
@@ -207,18 +219,11 @@ export function DesignReviewProvider({ children }: { children: ReactNode }) {
   }, [patch])
 
   const enableMonitoring = useCallback(() => {
-    setState((s) => {
-      setActiveReminder(`Issue #${s.issueNumber}`)
-      return {
-        ...s,
-        monitoringEnabled: true,
-        flowState: 'idle',
-        currentProduct: 'Work Center',
-      }
-    })
+    setActiveReminder(`Issue #${state.issueNumber}`)
+    patch({monitoringEnabled:true,flowState:'idle'})
     setActiveFlow(null)
     navigate('/work-center')
-  }, [navigate, setActiveFlow, setActiveReminder])
+  }, [navigate, setActiveFlow, setActiveReminder, state.issueNumber, patch])
 
   const backToWorkCenter = useCallback(() => {
     setState(defaultDesignReviewState)
@@ -233,6 +238,7 @@ export function DesignReviewProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       state,
+      selectEvidence, openIssue,
       isActive: state.flowState !== 'idle',
       taskTitle: designReviewTaskTitle,
       beginFromWorkCenter,
@@ -255,7 +261,7 @@ export function DesignReviewProvider({ children }: { children: ReactNode }) {
       backToSketchUpFromProjectSight,
     }),
     [
-      state,
+      state, selectEvidence, openIssue,
       beginFromWorkCenter,
       openInSketchUp,
       selectWall,

@@ -10,7 +10,7 @@ export function WidgetAddedToast() {
   const subtitle = widgetConfig.title.replace('—', '-')
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-[60] flex justify-center px-4">
+    <div className="gw-added-toast pointer-events-none fixed inset-x-0 bottom-6 z-[60] flex justify-center px-4">
       <div
         className="pointer-events-auto flex w-full max-w-[520px] items-center gap-3 rounded-xl border border-[#86efac] bg-white px-4 py-3 shadow-lg"
         role="status"

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { GripVertical, LayoutGrid, MoreHorizontal, Trash2 } from 'lucide-react'
 import { useGeneratedWidgets } from '../../context/GeneratedWidgetsContext'
 import type { DashboardWidgetId } from '../../types/generatedWidgets'
@@ -18,15 +19,16 @@ export function DashboardEditMode() {
     saveDashboard,
     removeWidgetFromDraft,
     moveDraftWidget,
-    recentActivityIsNew,
-    widgetConfig,
+    recentActivityIsNew,selectedOptionId,
+    widgetConfig,widgetConfigs,setLibraryTab,
   } = useGeneratedWidgets()
 
+  const [menu,setMenu]=useState<number|null>(null)
   const layout = draftLayout ?? []
   const showEmptySlot = layout.length < 7
 
   function titleFor(id: DashboardWidgetId) {
-    if (id === 'recent-activity') return widgetConfig.title
+    if (id === 'recent-activity'||id==='activity-summary'||id==='project-timeline') return widgetConfigs[id]?.title??widgetConfig.title
     return EDIT_LABELS[id] ?? widgetTitleMap[id] ?? id
   }
 
@@ -44,7 +46,7 @@ export function DashboardEditMode() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col px-6 py-5 lg:px-8">
+    <div className="gw-editor flex min-h-0 flex-1 flex-col">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <LayoutGrid className="h-5 w-5 text-[var(--wc-brand-mid)]" />
@@ -70,7 +72,7 @@ export function DashboardEditMode() {
 
       <div className="grid flex-1 grid-cols-1 gap-[var(--wc-widget-gap)] min-[1280px]:grid-cols-3">
         {layout.map((id, index) => {
-          const isNew = id === 'recent-activity' && recentActivityIsNew
+          const isNew = id === selectedOptionId && recentActivityIsNew
           return (
             <article
               key={`${id}-${index}`}
@@ -98,18 +100,19 @@ export function DashboardEditMode() {
                     ) : null}
                   </div>
                 </div>
-                <button type="button" className="text-[var(--wc-muted-light)]" aria-label="Options">
+                <button type="button" className="text-[var(--wc-muted-light)]" aria-label={`Options for ${titleFor(id)}`} onClick={()=>setMenu(menu===index?null:index)}>
                   <MoreHorizontal className="h-4 w-4" />
                 </button>
                 <button
                   type="button"
                   onClick={() => removeWidgetFromDraft(id)}
                   className="text-[var(--wc-muted-light)] hover:text-red-500"
-                  aria-label="Remove widget"
+                  aria-label={`Remove ${titleFor(id)}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
+              {menu===index&&<div className="gw-reorder-controls"><button disabled={index===0} onClick={()=>{moveDraftWidget(index,index-1);setMenu(index-1)}}>Move earlier</button><button disabled={index===layout.length-1} onClick={()=>{moveDraftWidget(index,index+1);setMenu(index+1)}}>Move later</button></div>}
               <div className="flex flex-1 items-center justify-center px-4 py-6">
                 <p className="text-sm text-[var(--wc-muted-light)]">Widget preview</p>
               </div>
@@ -118,6 +121,7 @@ export function DashboardEditMode() {
         })}
         {showEmptySlot ? (
           <div
+            role="button" tabIndex={0} aria-label="Browse widgets" onClick={()=>setLibraryTab('generated')} onKeyDown={e=>{if(e.key==='Enter'||e.key===' ')setLibraryTab('generated')}}
             className="flex min-h-[180px] flex-col items-center justify-center rounded-[8px] border border-dashed border-[var(--wc-border)] bg-[#fafbfc] text-[var(--wc-muted)]"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => handleDrop(e, layout.length)}

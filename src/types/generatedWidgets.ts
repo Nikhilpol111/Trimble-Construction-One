@@ -37,12 +37,15 @@ export type DashboardWidgetId =
   | 'customer-aging'
   | 'trimble-connect-projects'
   | 'on-track'
+  | 'activity-summary'
+  | 'project-timeline'
   | 'recent-activity'
 
 export type GeneratedWidgetsPersistedState = {
   dashboardLayout: DashboardWidgetId[]
   widgetConfig: WidgetConfig
   selectedGeneratedWidget: GeneratedWidgetOptionId | null
+  widgetConfigs?: Partial<Record<GeneratedWidgetOptionId,WidgetConfig>>
   recentActivityAdded: boolean
 }
 

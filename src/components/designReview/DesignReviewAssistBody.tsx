@@ -1,4 +1,4 @@
-import { Check, ChevronRight, Circle, Loader2, Shield } from 'lucide-react'
+import { Check, ChevronRight, Circle, Loader2, Shield, MousePointer2 } from 'lucide-react'
 import { designReviewSources } from '../../flows/designReview/constants'
 import { investigationSteps } from '../../flows/designReview/investigationProgress'
 import { useDesignReview } from '../../context/DesignReviewContext'
@@ -17,9 +17,8 @@ export function DesignReviewAssistBody({
   investigating: boolean
 }) {
   const {
-    state,
+    state, selectEvidence, openIssue,
     openInSketchUp,
-    selectWall,
     setSuggestedAction,
     openSourcePermission,
     toggleSource,
@@ -37,7 +36,7 @@ export function DesignReviewAssistBody({
 
   if (flowState === 'connectContext') {
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
         <div>
           <div className="mb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold text-[var(--ps-text)]">Comments</h3>
@@ -77,33 +76,23 @@ export function DesignReviewAssistBody({
 
   if (flowState === 'sketchupSelect') {
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
         <div className="flex flex-col items-center justify-center py-4 text-center">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-lg border-2 border-dashed border-[#cbd5e1] text-[var(--ps-muted)]">
-            <span className="text-2xl">⌖</span>
+            <MousePointer2/>
           </div>
           <p className="text-sm font-semibold text-[var(--ps-text)]">Select an element to begin</p>
           <p className="mt-2 max-w-[220px] text-xs leading-relaxed text-[var(--ps-muted)]">
             Trimble Assist will pick up your selection context automatically.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={selectWall}
-          className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--ps-brand)] bg-[var(--ps-active-bg)] py-2.5 text-sm font-semibold text-[var(--ps-brand)]"
-        >
-          Select Mechanical Room East Wall
-        </button>
-        <p className="text-center text-[11px] text-[var(--ps-muted)]">
-          Or click the highlighted east wall in the model.
-        </p>
       </div>
     )
   }
 
   if (flowState === 'sketchupSelectionContext') {
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
         <p className="rounded-lg bg-[#f1f5f9] px-3 py-2.5 text-xs leading-relaxed text-[var(--ps-muted)]">
           This wall changed from the previous shared model — it moved about 450 mm east, which may reduce the
           adjacent service clearance.
@@ -118,13 +107,13 @@ export function DesignReviewAssistBody({
             >
               Compare with previous version
             </button>
-            <button type="button" className="dr-assist-action">
+            <button type="button" onClick={()=>setSuggestedAction('comments')} className="dr-assist-action">
               Find related comments
             </button>
             <button type="button" className="dr-assist-action" onClick={openSourcePermission}>
               Check project impact
             </button>
-            <button type="button" className="dr-assist-action">
+            <button type="button" onClick={()=>setSuggestedAction('explain')} className="dr-assist-action">
               Explain this change
             </button>
           </div>
@@ -138,7 +127,7 @@ export function DesignReviewAssistBody({
 
   if (flowState === 'sketchupComparison') {
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
         <div className="rounded-lg border border-[var(--ps-border)] bg-white p-3">
           <p className="text-sm font-semibold text-[var(--ps-text)]">Mechanical Room East Wall</p>
           <dl className="mt-3 space-y-2 text-xs">
@@ -184,7 +173,7 @@ export function DesignReviewAssistBody({
 
   if (flowState === 'sourcePermission') {
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
         <p className="text-xs text-[var(--ps-muted)]">Choose which connected project sources I should use.</p>
         <div className="space-y-2">
           {designReviewSources.map((src) => {
@@ -193,6 +182,7 @@ export function DesignReviewAssistBody({
               <button
                 key={src.id}
                 type="button"
+                aria-pressed={active}
                 onClick={() => toggleSource(src.id)}
                 className={`dr-source-select ${active ? 'dr-source-select--active' : ''}`}
               >
@@ -239,18 +229,21 @@ export function DesignReviewAssistBody({
   }
 
   if (flowState === 'investigating') {
-    const groups = [...new Set(investigationSteps.map((s) => s.group))]
+    const sourceForGroup={SKETCHUP:'sketchup','TRIMBLE CONNECT':'trimbleConnect',PROJECTSIGHT:'projectSight'} as const
+    const scopedSteps=investigationSteps.filter(s=>selectedSources.includes(sourceForGroup[s.group as keyof typeof sourceForGroup]))
+    const groups=[...new Set(scopedSteps.map(s=>s.group))]
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
+        {selectedSources.includes('otherDocs')&&<p>No additional specification or report evidence was found.</p>}
         {groups.map((group) => (
           <div key={group}>
             <SectionLabel>{group}</SectionLabel>
             <ul className="mt-2 space-y-2">
-              {investigationSteps
+              {scopedSteps
                 .filter((s) => s.group === group)
                 .map((step) => {
                   const done = completedStepIds.includes(step.id)
-                  const loading = investigating && !done && step.id === investigationSteps.find(
+                  const loading = investigating && !done && step.id === scopedSteps.find(
                     (x) => !completedStepIds.includes(x.id),
                   )?.id
                   return (
@@ -275,7 +268,7 @@ export function DesignReviewAssistBody({
 
   if (flowState === 'impactFindings') {
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
         <p className="text-xs leading-relaxed text-[var(--ps-muted)]">
           Each finding links to its source. Inspect the evidence yourself, or review possible actions when
           you&apos;re ready.
@@ -283,12 +276,12 @@ export function DesignReviewAssistBody({
         <div className="space-y-2">
           <button
             type="button"
-            onClick={() => setFindingsAction('inspect')}
+            onClick={() => setFindingsAction('inspect')} disabled={!selectedSources.includes('projectSight')}
             className="dr-assist-action dr-assist-action--selected"
           >
             Inspect evidence
           </button>
-          <button type="button" className="dr-assist-action">
+          <button type="button" onClick={()=>setFindingsAction('continue')} className="dr-assist-action">
             Continue investigating
           </button>
           <button
@@ -305,23 +298,13 @@ export function DesignReviewAssistBody({
 
   if (flowState === 'evidenceInspection') {
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
         <p className="rounded-lg bg-[#f1f5f9] px-3 py-2.5 text-xs leading-relaxed text-[var(--ps-muted)]">
           These are the ProjectSight sources used in the impact summary. Check them independently — I can be
           wrong.
         </p>
         <SectionLabel>Used in AI finding</SectionLabel>
-        <div className="space-y-2">
-          <div className="rounded-lg border border-[var(--ps-border)] bg-white p-3 text-xs">
-            <p className="font-semibold text-[var(--ps-text)]">Drawing A-204</p>
-            <p className="mt-1 text-[var(--ps-muted)]">Revision: previous coordinated layout</p>
-            <p className="text-[var(--ps-muted)]">Relevant area: mechanical room east wall</p>
-          </div>
-          <div className="rounded-lg border border-[var(--ps-brand)] bg-[var(--ps-active-bg)] p-3 text-xs">
-            <p className="font-semibold text-[var(--ps-text)]">RFI-087</p>
-            <p className="mt-1 text-[var(--ps-muted)]">Open · Mechanical services clearance</p>
-          </div>
-        </div>
+        <div className="dr-evidence-options">{(['drawing','rfi'] as const).map(source=><button key={source} aria-pressed={state.evidenceSource===source} onClick={()=>selectEvidence(source)}><strong>{source==='drawing'?'Drawing A-204':'RFI-087'}</strong><span>{source==='drawing'?'Revision: previous coordinated layout':'Status: Open'}</span><span>{source==='drawing'?'Relevant area: mechanical room east wall':'Minimum required clearance around services'}</span></button>)}</div>
         <button
           type="button"
           onClick={returnToImpactSummary}
@@ -335,7 +318,7 @@ export function DesignReviewAssistBody({
 
   if (flowState === 'issueDraft') {
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
         <p className="text-xs leading-relaxed text-[var(--ps-muted)]">
           I&apos;ve drafted a coordination issue from the connected evidence. Review and adjust anything before
           creating it — I won&apos;t submit without your confirmation.
@@ -359,12 +342,12 @@ export function DesignReviewAssistBody({
 
   if (flowState === 'issueCreated') {
     return (
-      <div className="space-y-4">
+      <div className={`dr-assist-content dr-state-${flowState} space-y-4`}>
         <div className="rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] px-3 py-2.5 text-xs text-[#166534]">
           Coordination Issue #{state.issueNumber} is now open in ProjectSight with all connected context linked.
         </div>
         <div className="space-y-2">
-          <button type="button" className="dr-assist-action dr-assist-action--selected">
+          <button type="button" onClick={openIssue} className="dr-assist-action dr-assist-action--selected">
             Open issue
           </button>
           <button

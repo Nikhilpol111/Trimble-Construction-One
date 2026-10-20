@@ -1,3 +1,4 @@
+import { useDesignReview } from '../../context/DesignReviewContext'
 import { AssistPanel } from '../assist/AssistPanel'
 import {
   DesignReviewAssistBody,
@@ -13,8 +14,9 @@ export function DesignReviewAssistPanel({
   completedStepIds: string[]
   investigating: boolean
 }) {
+  const {backToWorkCenter}=useDesignReview()
   return (
-    <AssistPanel title={designReviewAssistTitle(flowState)} variant="designReview">
+    <AssistPanel title={designReviewAssistTitle(flowState)} variant="designReview" onClose={backToWorkCenter}>
       <DesignReviewAssistBody completedStepIds={completedStepIds} investigating={investigating} />
     </AssistPanel>
   )

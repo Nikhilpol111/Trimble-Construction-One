@@ -1,7 +1,9 @@
+import { useGeneratedWidgets } from '../../context/GeneratedWidgetsContext'
 import { DashboardWidget } from '../workCenter/DashboardWidget'
 import { ActivityListCompact } from './ActivityListContent'
 
 export function RecentActivityWidget({ title }: { title: string }) {
+  const {widgetConfigs}=useGeneratedWidgets()
   const displayTitle = title.includes('—')
     ? title.split('—')[0].trim()
     : title
@@ -9,7 +11,7 @@ export function RecentActivityWidget({ title }: { title: string }) {
 
   return (
     <DashboardWidget title={displayTitle} productLabel={product}>
-      <ActivityListCompact />
+      <ActivityListCompact config={widgetConfigs['recent-activity']}/>
     </DashboardWidget>
   )
 }

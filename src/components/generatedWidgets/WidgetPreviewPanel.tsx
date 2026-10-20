@@ -1,7 +1,7 @@
 import { ArrowLeft, RefreshCw } from 'lucide-react'
 import { useGeneratedWidgets } from '../../context/GeneratedWidgetsContext'
 import { AssistMark } from './AssistMark'
-import { ActivityListDashboard } from './ActivityListContent'
+import { ActivityListDashboard, ActivitySummaryContent, ActivityTimelineContent } from './ActivityListContent'
 import { WidgetConfigForm } from './WidgetConfigForm'
 
 export function WidgetPreviewPanel() {
@@ -14,12 +14,10 @@ export function WidgetPreviewPanel() {
     selectedOptionId,
   } = useGeneratedWidgets()
 
-  if (selectedOptionId !== 'recent-activity') {
-    return null
-  }
+
 
   return (
-    <div className="gw-overlay-root">
+    <div className="gw-overlay-root gw-preview">
       <div className="gw-gradient-shell w-full max-w-[920px]">
         <div className="gw-panel-inner p-5">
           <div className="mb-5 flex gap-2">
@@ -32,7 +30,7 @@ export function WidgetPreviewPanel() {
 
           <div className="flex flex-col gap-5 min-[900px]:flex-row">
             <div className="min-w-0 flex-1 rounded-lg border border-[var(--wc-border)] bg-white p-4">
-              <ActivityListDashboard title={widgetConfig.title} showGeneratedBadge />
+              {selectedOptionId==='activity-summary'?<ActivitySummaryContent/>:selectedOptionId==='project-timeline'?<ActivityTimelineContent/>:<ActivityListDashboard title={widgetConfig.title} showGeneratedBadge/>}
             </div>
             <div className="w-full min-[900px]:w-[280px] shrink-0">
               <WidgetConfigForm config={widgetConfig} onChange={updateWidgetConfig} />

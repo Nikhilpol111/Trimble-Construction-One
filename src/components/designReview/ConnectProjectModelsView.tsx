@@ -1,22 +1,20 @@
+import { Box } from 'lucide-react'
+import { BuildingModel } from './BuildingModel'
 export function ConnectProjectModelsView() {
   return (
-    <div className="p-6 lg:p-8">
+    <div className="dr-connect p-6 lg:p-8">
       <h1 className="text-2xl font-bold text-[var(--ps-text)]">Project models</h1>
       <p className="mt-1 text-sm text-[var(--ps-muted)]">Shared design models · updated today</p>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:max-w-3xl">
         <article className="overflow-hidden rounded-lg border-2 border-[var(--ps-brand)] bg-white shadow-sm">
           <div className="aspect-[4/3] bg-gradient-to-br from-[#e2e8f0] to-[#f8fafc] p-4">
-            <svg viewBox="0 0 200 140" className="h-full w-full" aria-hidden>
-              <path d="M40 100 L100 70 L160 100 L100 130 Z" fill="#cbd5e1" />
-              <path d="M100 70 L100 40 L160 70 L160 100 Z" fill="#94a3b8" />
-              <path d="M40 100 L40 70 L100 40 L100 70 Z" fill="#64748b" />
-            </svg>
+            <BuildingModel selected/>
           </div>
           <div className="border-t border-[var(--ps-border-light)] px-3 py-3">
             <div className="flex items-start justify-between gap-2">
               <div className="flex min-w-0 items-center gap-2">
                 <span className="text-lg" aria-hidden>
-                  🔺
+                  <Box className="dr-model-file-icon"/>
                 </span>
                 <p className="truncate text-sm font-semibold text-[var(--ps-text)]">
                   NorthRidge_Design_v18.skp
@@ -31,16 +29,12 @@ export function ConnectProjectModelsView() {
         </article>
         <article className="overflow-hidden rounded-lg border border-[var(--ps-border)] bg-white">
           <div className="aspect-[4/3] bg-gradient-to-br from-[#e2e8f0] to-[#f8fafc] p-4 opacity-90">
-            <svg viewBox="0 0 200 140" className="h-full w-full" aria-hidden>
-              <path d="M40 100 L100 70 L160 100 L100 130 Z" fill="#cbd5e1" />
-              <path d="M100 70 L100 40 L160 70 L160 100 Z" fill="#94a3b8" />
-              <path d="M40 100 L40 70 L100 40 L100 70 Z" fill="#64748b" />
-            </svg>
+            <BuildingModel/>
           </div>
           <div className="border-t border-[var(--ps-border-light)] px-3 py-3">
             <div className="flex items-center gap-2">
               <span className="text-lg" aria-hidden>
-                🔺
+                <Box className="dr-model-file-icon"/>
               </span>
               <p className="truncate text-sm font-semibold text-[var(--ps-text)]">
                 NorthRidge_Design_v17.skp
